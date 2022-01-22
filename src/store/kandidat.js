@@ -1,39 +1,33 @@
-// import kandidatModel from "@/models/kandidat";
+// import itemModel from "@/models/item";
 import axios from "axios";
+
 export default {
   namespaced: true,
   state: () => ({
-    kandidats: [],
+    items: [],
+    path: "kandidat",
   }),
   mutations: {
-    setKandidats(state, kandidats) {
-      state.kandidats = kandidats;
+    setItems(state, items) {
+      state.items = items;
     },
   },
   actions: {
-    async getAll({ commit }) {
+    async getAll({ commit, state }) {
       try {
-        const { data } = await axios.get(`kandidat/`);
-        commit("setKandidats", data);
+        const { data } = await axios.get(`${state.path}/`);
+        commit("setItems", data);
       } catch (error) {
         return error.response;
       }
     },
-    async getListKandidat({ commit }) {
+    async addItem({ commit, state }, item) {
       try {
-        const { data } = await axios.get(`kandidat?select=list`);
-        commit("setKandidats", data);
-      } catch (error) {
-        return error.response;
-      }
-    },
-    async addKandidat({ commit, state }, kandidat) {
-      try {
-        const res = await axios.post("kandidat/", kandidat.toFormData());
+        const res = await axios.post(`${state.path}/`, item.toFormData());
 
         if (res.status == 201) {
-          const newKandidat = res.data.kandidat;
-          commit("setKandidats", [...state.kandidats, newKandidat]);
+          const newItem = res.data.item;
+          commit("setItems", [...state.items, newItem]);
         }
 
         return res;
@@ -41,24 +35,31 @@ export default {
         return error.response;
       }
     },
-    async editKandidat({ state }, { index, kandidat }) {
+    async editItem({ state }, { index, item }) {
       try {
         const res = await axios.put(
-          `kandidat/${kandidat.id}`,
-          kandidat.toFormData()
+          `${state.path}/${item.id}`,
+          item.toFormData()
         );
 
-        if (res.status == 202) Object.assign(state.kandidats[index], kandidat);
+        if (item.file != undefined) {
+          item.cache = new Date().getTime();
+        }
+
+        if (res.status == 202) {
+          item.file = null;
+          Object.assign(state.items[index], item);
+        }
         return res;
       } catch (error) {
         return error.response;
       }
     },
-    async deleteKandidat({ state }, { index, id }) {
+    async deleteItem({ state }, { index, id }) {
       try {
-        const res = await axios.delete(`kandidat/${id}`);
+        const res = await axios.delete(`${state.path}/${id}`);
 
-        if (res.status == 202) state.kandidats.splice(index, 1);
+        if (res.status == 202) state.items.splice(index, 1);
 
         return res;
       } catch (error) {

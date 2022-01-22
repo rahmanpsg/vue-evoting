@@ -13,6 +13,14 @@
 
     <v-navigation-drawer v-model="drawer" color="primary" app bottom right dark>
       <v-list>
+        <v-list-item link>
+          <v-list-item-content>
+            <v-list-item-title v-text="nama"> </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+      <v-divider></v-divider>
+      <v-list nav dense>
         <v-list-item-group active-class="text--accent-4">
           <template v-for="(item, i) in items">
             <v-subheader
@@ -142,7 +150,7 @@ export default {
     };
   },
   computed: {
-    ...mapState("userModule", { nama: "nama" }),
+    ...mapState("authModule", ["nama"]),
     selectedItem() {
       let selected = this.items.findIndex(
         (item) => item.href == this.$route.path
@@ -171,7 +179,7 @@ export default {
   },
   methods: {
     logout() {
-      this.$store.commit("userModule/isLogin", false);
+      this.$store.commit("authModule/isLogin", false);
       this.$router.push("/");
       localStorage.clear();
     },

@@ -4,19 +4,25 @@ import createPersistedState from "vuex-persistedstate";
 import SecureLS from "secure-ls";
 const ls = new SecureLS({ isCompression: false });
 
+import crudModule from "./crud";
+import authModule from "./auth";
 import userModule from "./user";
 import kandidatModule from "./kandidat";
+import pemilihModule from "./pemilih";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
+    crudModule,
+    authModule,
     userModule,
     kandidatModule,
+    pemilihModule,
   },
   plugins: [
     createPersistedState({
-      paths: ["userModule"],
+      paths: ["authModule"],
       storage: {
         getItem: (key) => ls.get(key),
         setItem: (key, value) => ls.set(key, value),

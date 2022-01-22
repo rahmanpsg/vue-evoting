@@ -69,7 +69,7 @@ export default {
 
       this.$emit("setLoading", true);
 
-      const res = await this.$store.dispatch("userModule/login", {
+      const res = await this.$store.dispatch("authModule/login", {
         username: this.username,
         password: this.password,
       });
@@ -83,13 +83,13 @@ export default {
         return;
       }
 
-      this.$store.commit("userModule/setData", res.data);
+      this.$store.commit("authModule/setData", res.data);
       this.$emit("setLoading", true);
       this.alertRest.text = `Anda berhasil login sebagai ${res.data.user.nama}`;
       this.alertRest.type = "success";
 
       setTimeout(() => {
-        this.$store.commit("userModule/isLogin", true);
+        this.$store.commit("authModule/isLogin", true);
         this.$router.push(res.data.user.role);
       }, 2000);
     },

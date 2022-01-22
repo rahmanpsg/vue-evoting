@@ -38,8 +38,19 @@
 
       <template v-slot:[`item.foto`]="{ item }">
         <v-avatar size="150px" class="my-2">
-          <img alt="Avatar" :src="fotoUrl(item.id)" />
+          <img alt="Avatar" :src="fotoUrl(item.id, item)" />
         </v-avatar>
+      </template>
+
+      <template v-slot:[`item.status`]="{ item }">
+        <v-chip
+          class="d-flex justify-center"
+          style="width: 100px"
+          :color="item.status ? `green` : `red`"
+          dark
+        >
+          {{ item.status ? "Aktif" : "Tidak Aktif" }}
+        </v-chip>
       </template>
 
       <template v-slot:[`item.aksi`]="{ item }">
@@ -98,15 +109,24 @@ export default {
   data: () => ({
     search: "",
   }),
+  computed: {
+    url() {
+      // console.log(this.items);
+      return this.items.map(
+        (item) =>
+          `${axios.defaults.baseURL}kandidat/foto/${item.id}?cache=${
+            item.cache ?? new Date().getTime()
+          }`
+      );
+    },
+  },
   methods: {
     selectRow(item, row) {
       row.select(!row.isSelected);
       this.$emit("update:selectedFilter", !row.isSelected ? item._id : null);
     },
-    fotoUrl(id) {
-      //   console.log(axios.defaults.baseURL + id);
-
-      return `${axios.defaults.baseURL}kandidat/foto/${id}`;
+    fotoUrl(id, item) {
+      return `${axios.defaults.baseURL}kandidat/foto/${id}?cache=${item.cache}`;
     },
   },
 };

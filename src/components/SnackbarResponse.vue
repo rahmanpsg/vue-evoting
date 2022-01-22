@@ -1,12 +1,16 @@
 <template>
   <v-snackbar
-    v-model="response.show"
     :timeout="2000"
-    :color="response.sucess ? 'primary' : 'warning'"
+    :value="response.show"
     absolute
-    centered
+    center
+    text
+    outlined
+    :color="response.type"
   >
-    {{ response.text }}
+    <v-alert :type="response.type" text shaped prominent>
+      <strong v-text="response.text"></strong>
+    </v-alert>
   </v-snackbar>
 </template>
 

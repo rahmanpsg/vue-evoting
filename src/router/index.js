@@ -5,7 +5,7 @@ import store from "@/store";
 Vue.use(VueRouter);
 
 const isLogin = (to, from, next) => {
-  const { login, role } = store.state.userModule;
+  const { login, role } = store.state.authModule;
 
   try {
     if (to.name == "Login") {
@@ -18,7 +18,7 @@ const isLogin = (to, from, next) => {
       }
     }
   } catch (error) {
-    // console.log(error);
+    // console.log(error);c
   }
 
   next();
@@ -31,36 +31,6 @@ const routes = [
     beforeEnter: isLogin,
     component: () => import("../views/Login.vue"),
   },
-  // {
-  //   path: "/admin",
-  //   beforeEnter: isLogin,
-  //   component: () => import("../views/admin/index.vue"),
-  //   children: [
-  //     {
-  //       name: "Admin",
-  //       path: "",
-  //       meta: { icon: "mdi-view-dashboard" },
-  //       component: () => import("../views/admin/dashboard.vue"),
-  //     },
-  //     {
-  //       path: "master/",
-  //       name: "Master Data",
-  //       meta: { icon: "mdi-gamepad-circle-outline" },
-
-  //       children: [
-  //         {
-  //           name: "Kandidat",
-  //           meta: {
-  //             icon: "mdi-account-tie",
-  //           },
-  //           path: "kandidat/",
-  //           // beforeEnter: (to, from, next) => console.log(to, from, next),
-  //           component: () => import("../views/admin/kandidat.vue"),
-  //         },
-  //       ],
-  //     },
-  //   ],
-  // },
   {
     path: "/admin",
     component: () => import("../views/admin/index.vue"),
@@ -77,11 +47,15 @@ const routes = [
       },
       {
         path: "pemilih/",
-        component: () => import("../views/admin/kandidat.vue"),
+        component: () => import("../views/admin/pemilih.vue"),
       },
       {
-        path: "laporan",
+        path: "laporan/",
         component: () => import("../views/admin/laporan.vue"),
+      },
+      {
+        path: "user/",
+        component: () => import("../views/admin/user.vue"),
       },
     ],
   },

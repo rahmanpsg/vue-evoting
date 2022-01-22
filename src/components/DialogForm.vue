@@ -25,7 +25,9 @@
       </v-toolbar>
 
       <v-card-text>
-        <slot name="form"></slot>
+        <v-form ref="form" v-model="valid" lazy-validation>
+          <slot name="form"></slot>
+        </v-form>
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -36,7 +38,15 @@ export default {
   props: {
     dialog: Boolean,
     loading: Boolean,
+    formValid: Boolean,
     formTitle: String,
+  },
+  data() {
+    return { valid: true };
+  },
+  updated() {
+    if (this.$refs.form && this.$store.getters["crudModule/getForm"] == null)
+      this.$store.commit("crudModule/setForm", this.$refs.form);
   },
 };
 </script>

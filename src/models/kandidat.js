@@ -1,10 +1,11 @@
 class KandidatModel {
-  constructor({ id, nama, foto, file, keterangan }) {
+  constructor({ id, nama, foto, file, keterangan, cache }) {
     this.id = id;
     this.nama = nama;
     this.foto = foto;
     this.file = file;
     this.keterangan = keterangan;
+    this.cache = cache != undefined ? cache : new Date().getTime();
   }
 
   toFormData() {

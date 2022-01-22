@@ -24,6 +24,7 @@
             >
               <template v-slot:form>
                 <!-- <v-form ref="form" v-model="valid" lazy-validation> -->
+
                 <v-row>
                   <v-col cols="12" sm="12" md="12">
                     <v-text-field
@@ -35,32 +36,25 @@
                   </v-col>
 
                   <v-col cols="12" sm="12" md="12">
-                    <v-file-input
-                      v-model="editedItem.file"
-                      label="Foto"
-                      prepend-icon="mdi-camera"
-                      accept="image/png, image/jpeg, image/bmp"
-                      :rules="[
-                        (v) =>
-                          editedIndex !== -1 ||
-                          !!v ||
-                          'Foto tidak boleh kosong',
-                      ]"
-                      :required="editedIndex !== -1"
-                    ></v-file-input>
-                    <template v-if="editedIndex !== -1">
-                      <div class="ml-6 mt-n4 caption">
-                        <v-icon small class="">mdi-information</v-icon>
-                        Kosongkan Foto Jika Tidak Ingin Diubah
-                      </div>
-                    </template>
+                    <v-text-field
+                      v-model="editedItem.username"
+                      label="Username"
+                      :rules="[(v) => !!v || 'Username tidak boleh kosong']"
+                      required
+                      autocomplete="off"
+                    ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="12" md="12">
-                    <v-textarea
-                      v-model="editedItem.keterangan"
-                      label="Keterangan"
-                      :rules="[(v) => !!v || 'Keterangan tidak boleh kosong']"
-                    ></v-textarea>
+                    <v-text-field
+                      v-model="editedItem.password"
+                      label="Password"
+                      :rules="[(v) => !!v || 'Password tidak boleh kosong']"
+                      required
+                      autocomplete="off"
+                      :type="showPassword ? 'text' : 'password'"
+                      :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+                      @click:append="() => (showPassword = !showPassword)"
+                    ></v-text-field>
                   </v-col>
                 </v-row>
                 <!-- </v-form> -->
@@ -81,7 +75,6 @@
     <v-snackbar
       :timeout="2000"
       v-model="response.show"
-      absolute
       centered
       text
       outlined
@@ -100,7 +93,7 @@ import DialogForm from "@/components/DialogForm.vue";
 import DialogCustom from "@/components/DialogCustom.vue";
 import { mapState, mapActions } from "vuex";
 
-import KandidatModel from "@/models/kandidat";
+import UserModel from "@/models/user";
 
 export default {
   components: {
@@ -119,10 +112,11 @@ export default {
           value: "index",
         },
         { text: "Nama", value: "nama" },
-        { text: "Foto", value: "foto", sortable: false },
-        { text: "Keterangan", value: "keterangan", sortable: false },
+        { text: "Username", value: "username" },
+        { text: "Status", value: "status" },
         { text: "Aksi", value: "aksi", sortable: false },
       ],
+      showPassword: false,
     };
   },
   async created() {
@@ -131,15 +125,15 @@ export default {
     if (!this.items.length) await this.getAll();
 
     await this.$store.commit("crudModule/initCrud", {
-      model: KandidatModel,
+      model: UserModel,
       items: this.items,
-      moduleName: "kandidatModule",
+      moduleName: "pemilihModule",
     });
 
     this.loading = false;
   },
   computed: {
-    ...mapState("kandidatModule", ["items"]),
+    ...mapState("pemilihModule", ["items"]),
     ...mapState("crudModule", [
       "valid",
       "dialog",
@@ -151,12 +145,12 @@ export default {
     ]),
     formTitle() {
       return this.editedIndex === -1
-        ? "Tambah Data Kandidat"
-        : "Edit Data Kandidat";
+        ? "Tambah Data Pemilih"
+        : "Edit Data Pemilih";
     },
   },
   methods: {
-    ...mapActions("kandidatModule", ["getAll"]),
+    ...mapActions("pemilihModule", ["getAll"]),
     ...mapActions("crudModule", [
       "tambah",
       "edit",

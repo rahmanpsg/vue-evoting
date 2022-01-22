@@ -5,7 +5,7 @@ export default {
   namespaced: true,
   state: () => ({
     items: [],
-    path: "user",
+    path: "pemilih",
   }),
   mutations: {
     setItems(state, items) {
