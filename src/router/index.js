@@ -46,6 +46,10 @@ const routes = [
         component: () => import("../views/admin/kandidat.vue"),
       },
       {
+        path: "daftarVote/",
+        component: () => import("../views/admin/daftarVote.vue"),
+      },
+      {
         path: "pemilih/",
         component: () => import("../views/admin/pemilih.vue"),
       },

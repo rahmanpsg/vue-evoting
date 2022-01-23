@@ -43,12 +43,9 @@ export default {
     },
     async edit({ state }, item) {
       try {
-        try {
-          state.editedIndex = state.items.indexOf(item);
-          state.editedItem = new state.model(item);
-        } catch (error) {
-          console.log(error);
-        }
+        state.editedIndex = state.items.indexOf(item);
+        state.editedItem = new state.model(item);
+        console.log(state.editedItem);
 
         if (state.form) state.form.validate();
 

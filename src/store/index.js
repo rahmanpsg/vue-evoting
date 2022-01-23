@@ -9,6 +9,7 @@ import authModule from "./auth";
 import userModule from "./user";
 import kandidatModule from "./kandidat";
 import pemilihModule from "./pemilih";
+import daftarVoteModule from "./daftarVote";
 
 Vue.use(Vuex);
 
@@ -19,6 +20,7 @@ export default new Vuex.Store({
     userModule,
     kandidatModule,
     pemilihModule,
+    daftarVoteModule,
   },
   plugins: [
     createPersistedState({

@@ -114,7 +114,7 @@ export default {
             },
             {
               text: "Daftar Vote",
-              href: "/admin/daftar_vote",
+              href: "/admin/daftarVote",
               icon: "mdi-vote ",
             },
           ],
