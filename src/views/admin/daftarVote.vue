@@ -11,8 +11,8 @@
           itemKey="id"
           sortBy="id"
           :loading="loading"
-          :dialogDelete="dialogDelete"
           :showSelect="true"
+          :selectedIndex.sync="selectedIndex"
           :selectedFilter.sync="selectedDaftarVote"
           :isSelected.sync="isSelected"
         >
@@ -134,6 +134,7 @@
 
                   <v-col cols="6" sm="6" md="6">
                     <v-menu
+                      ref="menuTanggalSelesai"
                       v-model="menuTanggalSelesai"
                       :close-on-content-click="false"
                       :return-value.sync="editedItem.tanggal_selesai"
@@ -222,54 +223,72 @@
                 <!-- </v-form> -->
               </template>
             </DialogForm>
-
+          </template>
+        </Table>
+      </v-col>
+      <v-col cols="12" sm="6" md="6">
+        <Table
+          @tambah="dialogKandidat = true"
+          @simpan="simpanKandidat"
+          @up="up"
+          @down="down"
+          :headers="headersKandidat"
+          :items.sync="itemListKandidat"
+          itemKey="id"
+          sortBy="nomor"
+          :loading="loadingKandidat"
+          :showSearch="false"
+          :showCustomAksi="true"
+          :hideFooter="true"
+          :isSelected="isSelected"
+        >
+          <template v-slot:modal>
             <DialogCustom
-              :dialog="dialogDelete"
+              jenis="Kandidat"
+              @simpan="tutupModalKandidat"
+              :dialogModel.sync="dialogKandidat"
               :dialogLoading="dialogLoading"
-              title="Anda yakin untuk menghapus data ini?"
-              @hapus="hapus"
-              @closeDialog="closeDialog"
+              :selected.sync="selectedKandidat"
+              :items="itemsKandidat"
             />
           </template>
         </Table>
       </v-col>
       <v-col cols="12" sm="6" md="6">
         <Table
-          ref="tableKandidat"
-          @up="up"
-          @down="down"
-          @hapus="showDialogHapus"
-          :headers="headersKandidat"
-          :items.sync="itemListKandidat"
-          itemKey="id"
-          sortBy="nomor"
-          :loading="loadingKandidat"
-          :dialogDelete="dialogDelete"
-          :showSearch="false"
-          :showCustomAksi="true"
-          :hideFooter="true"
-          :isSelected="isSelected"
-        >
-        </Table>
-      </v-col>
-      <v-col cols="12" sm="6" md="6">
-        <Table
-          @hapus="showDialogHapus"
+          @tambah="dialogPemilih = true"
+          @simpan="simpanPemilih"
           :headers="headersPemilih"
-          :items="itemsListPemilih"
+          :items.sync="itemListPemilih"
           itemKey="id"
-          sortBy="nomor"
+          sortBy="nama"
           :loading="loadingPemilih"
-          :dialogDelete="dialogDelete"
-          :showSelect="true"
           :showSearch="false"
           :showCustomAksi="true"
           :hideFooter="true"
           :isSelected="isSelected"
         >
+          <template v-slot:modal>
+            <DialogCustom
+              jenis="Pemilih"
+              @simpan="tutupModalPemilih"
+              :dialogModel.sync="dialogPemilih"
+              :dialogLoading="dialogLoading"
+              :selected.sync="selectedPemilih"
+              :items="itemsPemilih"
+            />
+          </template>
         </Table>
       </v-col>
     </v-row>
+    <DialogHapus
+      :dialog="dialogDelete"
+      :dialogLoading="dialogLoading"
+      title="Anda yakin untuk menghapus data ini?"
+      @hapus="hapus"
+      @closeDialog="closeDialog"
+    />
+
     <v-snackbar
       :timeout="2000"
       v-model="response.show"
@@ -289,6 +308,7 @@
 import Table from "@/components/Table.vue";
 import DialogForm from "@/components/DialogForm.vue";
 import DialogCustom from "@/components/DialogCustom.vue";
+import DialogHapus from "@/components/DialogHapus.vue";
 import { mapState, mapActions } from "vuex";
 
 import DaftarVoteModel from "@/models/daftarVote";
@@ -298,12 +318,13 @@ export default {
     Table,
     DialogForm,
     DialogCustom,
+    DialogHapus,
   },
   data() {
     return {
       loading: true,
-      loadingKandidat: false,
-      loadingPemilih: false,
+      loadingKandidat: true,
+      loadingPemilih: true,
       headers: [
         {
           text: "#",
@@ -331,16 +352,22 @@ export default {
           value: "index",
         },
         { text: "Nama Pemilih", value: "nama" },
+        { text: "Status", value: "vote_nomor" },
       ],
       showPassword: false,
       itemListKandidat: [],
-      itemsListPemilih: [],
+      itemListPemilih: [],
       menuTanggalMulai: false,
       menuTanggalSelesai: false,
       menuJamMulai: false,
       menuJamSelesai: false,
+      selectedIndex: null,
       selectedDaftarVote: null,
       isSelected: false,
+      dialogKandidat: false,
+      dialogPemilih: false,
+      selectedKandidat: [],
+      selectedPemilih: [],
     };
   },
   async created() {
@@ -364,6 +391,8 @@ export default {
     });
 
     this.loading = false;
+    this.loadingKandidat = false;
+    this.loadingPemilih = false;
   },
   computed: {
     ...mapState("daftarVoteModule", ["items"]),
@@ -383,10 +412,6 @@ export default {
         ? "Tambah Data Daftar Vote"
         : "Edit Data Daftar Vote";
     },
-    // itemListKandidat() {
-    //   //   console.log(this.selectedDaftarVote);
-    //   return [];
-    // },
   },
   watch: {
     selectedDaftarVote(val) {
@@ -399,7 +424,7 @@ export default {
           };
         });
 
-        this.itemListPemilih = item.list_kandidat.map((pemilih) => {
+        this.itemListPemilih = item.list_pemilih.map((pemilih) => {
           return {
             ...pemilih,
             ...this.itemsPemilih.find((k) => k.id == pemilih.id),
@@ -407,12 +432,34 @@ export default {
         });
       } else {
         this.itemListKandidat = [];
-        this.itemsListPemilih = [];
+        this.itemListPemilih = [];
       }
+    },
+    itemListKandidat(val) {
+      const listIDKandidat = val.map((k) => k.id);
+
+      const selected = this.itemsKandidat.reduce((prev, curr, i) => {
+        if (listIDKandidat.includes(curr.id)) prev.push(i);
+
+        return prev;
+      }, []);
+
+      this.selectedKandidat = selected;
+    },
+    itemListPemilih(val) {
+      const listIDPemilih = val.map((k) => k.id);
+
+      const selected = this.itemsPemilih.reduce((prev, curr, i) => {
+        if (listIDPemilih.includes(curr.id)) prev.push(i);
+
+        return prev;
+      }, []);
+
+      this.selectedPemilih = selected;
     },
   },
   methods: {
-    ...mapActions("daftarVoteModule", ["getAll"]),
+    ...mapActions("daftarVoteModule", ["getAll", "simpanDataList"]),
     ...mapActions("crudModule", [
       "tambah",
       "edit",
@@ -421,6 +468,61 @@ export default {
       "showDialogHapus",
       "closeDialog",
     ]),
+    tutupModalKandidat() {
+      this.itemListKandidat = this.selectedKandidat.map((v, n) => {
+        return { ...this.itemsKandidat.find((_, i) => i == v), nomor: n + 1 };
+      });
+
+      this.dialogKandidat = false;
+    },
+    tutupModalPemilih() {
+      this.itemListPemilih = this.selectedPemilih.map((v) => {
+        return { ...this.itemsPemilih.find((_, i) => i == v), vote_nomor: -1 };
+      });
+
+      this.dialogPemilih = false;
+    },
+    async simpanKandidat() {
+      this.loadingKandidat = true;
+
+      const res = await this.simpanDataList({
+        id: this.selectedDaftarVote,
+        index: this.selectedIndex,
+        items: this.itemListKandidat,
+        jenis: "kandidat",
+      });
+
+      this.loadingKandidat = false;
+
+      this.cekResponse(res);
+    },
+    async simpanPemilih() {
+      this.loadingPemilih = true;
+
+      const res = await this.simpanDataList({
+        id: this.selectedDaftarVote,
+        index: this.selectedIndex,
+        items: this.itemListPemilih,
+        jenis: "pemilih",
+      });
+
+      this.loadingPemilih = false;
+      this.cekResponse(res);
+    },
+    cekResponse(res) {
+      let text = res.data.message;
+      let type = "success";
+      if (res.status != 200 && res.status != 201 && res.status != 202) {
+        text = res.data.detail;
+        type = "error";
+      }
+
+      this.$store.commit("crudModule/setResponse", {
+        show: true,
+        text,
+        type,
+      });
+    },
     up(index) {
       //fungsi untuk menaikkan nomor urut kandidat
       this.itemListKandidat[index].nomor--;

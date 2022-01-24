@@ -114,7 +114,7 @@ export default {
             },
             {
               text: "Daftar Vote",
-              href: "/admin/daftarVote",
+              href: "/admin/daftarvote",
               icon: "mdi-vote ",
             },
           ],
@@ -122,12 +122,12 @@ export default {
 
         {
           text: "Kotak Suara",
-          href: "/admin/kotak_suara",
+          href: "/admin/kotaksuara",
           icon: "mdi-package-variant",
         },
         {
           text: "Hitung Cepat",
-          href: "/admin/hitung_cepat",
+          href: "/admin/hitungcepat",
           icon: "mdi-counter",
         },
         {

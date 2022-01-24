@@ -29,6 +29,11 @@ export default {
       state.items = items;
       state.moduleName = moduleName;
     },
+    setResponse(state, { show, text, type }) {
+      state.response.show = show;
+      state.response.text = text;
+      state.response.type = type;
+    },
   },
   actions: {
     tambah({ state }) {

@@ -11,6 +11,10 @@ export default {
     setItems(state, items) {
       state.items = items;
     },
+    setListData(state, { index, jenis, items }) {
+      if (jenis == "kandidat") state.items[index].list_kandidat = items;
+      if (jenis == "pemilih") state.items[index].list_pemilih = items;
+    },
   },
   actions: {
     async getAll({ commit, state }) {
@@ -57,6 +61,21 @@ export default {
         const res = await axios.delete(`${state.path}/${id}`);
 
         if (res.status == 202) state.items.splice(index, 1);
+
+        return res;
+      } catch (error) {
+        return error.response;
+      }
+    },
+    async simpanDataList({ state, commit }, { id, index, items, jenis }) {
+      try {
+        const res = await axios.post(
+          `${state.path}/list/${jenis}/${id}`,
+          items
+        );
+        if (res.status == 202) {
+          commit("setListData", { index, jenis, items: items });
+        }
 
         return res;
       } catch (error) {

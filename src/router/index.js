@@ -45,13 +45,18 @@ const routes = [
         path: "kandidat/",
         component: () => import("../views/admin/kandidat.vue"),
       },
-      {
-        path: "daftarVote/",
-        component: () => import("../views/admin/daftarVote.vue"),
-      },
+
       {
         path: "pemilih/",
         component: () => import("../views/admin/pemilih.vue"),
+      },
+      {
+        path: "daftarvote/",
+        component: () => import("../views/admin/daftarVote.vue"),
+      },
+      {
+        path: "kotaksuara/",
+        component: () => import("../views/admin/kotakSuara.vue"),
       },
       {
         path: "laporan/",

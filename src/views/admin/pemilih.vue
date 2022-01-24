@@ -61,7 +61,7 @@
               </template>
             </DialogForm>
 
-            <DialogCustom
+            <DialogHapus
               :dialog="dialogDelete"
               :dialogLoading="dialogLoading"
               title="Anda yakin untuk menghapus data ini?"
@@ -90,7 +90,7 @@
 <script>
 import Table from "@/components/Table.vue";
 import DialogForm from "@/components/DialogForm.vue";
-import DialogCustom from "@/components/DialogCustom.vue";
+import DialogHapus from "@/components/DialogHapus.vue";
 import { mapState, mapActions } from "vuex";
 
 import UserModel from "@/models/user";
@@ -99,7 +99,7 @@ export default {
   components: {
     Table,
     DialogForm,
-    DialogCustom,
+    DialogHapus,
   },
   data() {
     return {

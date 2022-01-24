@@ -2,10 +2,16 @@
   <v-card elevation="2" class="cardRadius">
     <v-card-title>
       <template v-if="!showCustomAksi">
-        <v-btn color="secondary" @click.stop="$emit('tambah')">
+        <v-btn
+          v-if="showBtnTambah"
+          color="secondary"
+          @click.stop="$emit('tambah')"
+        >
           <v-icon left> mdi-plus </v-icon>
           Tambah Data
         </v-btn>
+
+        <slot name="aksi"></slot>
         <v-spacer></v-spacer>
         <v-text-field
           v-if="showSearch"
@@ -15,6 +21,7 @@
           single-line
           hide-details
           dense
+          outlined
         ></v-text-field>
       </template>
       <template v-else>
@@ -27,15 +34,15 @@
               class="mx-2"
               @click.stop="$emit('tambah')"
               small
-              :disabled="!isSelected"
+              :disabled="!isSelected || loading"
             >
-              <v-icon> mdi-account-plus </v-icon>
+              <v-icon> mdi-account-edit </v-icon>
             </v-btn>
           </template>
-          <span>Tambah Data</span>
+          <span>Ubah Daftar</span>
         </v-tooltip>
 
-        <v-tooltip bottom>
+        <!-- <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               v-bind="attrs"
@@ -43,12 +50,30 @@
               color="error"
               @click.stop="$emit('tambah')"
               small
-              :disabled="!isSelected"
+              :disabled="!isSelected || loading"
             >
-              <v-icon> mdi-account-cancel</v-icon>
+              <v-icon> mdi-account-sync</v-icon>
             </v-btn>
           </template>
           <span>Reset Data</span>
+        </v-tooltip>
+
+        <v-spacer></v-spacer> -->
+
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              v-on="on"
+              color="primary"
+              @click.stop="$emit('simpan')"
+              small
+              :disabled="!isSelected || loading"
+            >
+              <v-icon small> mdi-content-save-all</v-icon>
+            </v-btn>
+          </template>
+          <span>Simpan Data</span>
         </v-tooltip>
       </template>
     </v-card-title>
@@ -99,6 +124,18 @@
           small
         >
           {{ item.status ? "Aktif" : "Tidak Aktif" }}
+        </v-chip>
+      </template>
+
+      <template v-slot:[`item.vote_nomor`]="{ item }">
+        <v-chip
+          class="d-flex justify-center"
+          style="width: 100px"
+          :color="item.vote_nomor > 0 ? `green` : `red`"
+          dark
+          small
+        >
+          {{ item.vote_nomor > 0 ? "Telah Memilih" : "Belum Memilih" }}
         </v-chip>
       </template>
 
@@ -197,6 +234,11 @@ export default {
       type: Boolean,
     },
     showCustomAksi: Boolean,
+    showBtnTambah: {
+      default: true,
+      type: Boolean,
+    },
+    selectedIndex: Number,
     selectedFilter: Number,
     isSelected: {
       default: false,
@@ -206,22 +248,12 @@ export default {
   data: () => ({
     search: "",
   }),
-  computed: {
-    url() {
-      // console.log(this.items);
-      return this.items.map(
-        (item) =>
-          `${axios.defaults.baseURL}kandidat/foto/${item.id}?cache=${
-            item.cache ?? new Date().getTime()
-          }`
-      );
-    },
-  },
   methods: {
     selectRow(item, row) {
       row.select(!row.isSelected);
 
       this.$emit("update:isSelected", !row.isSelected);
+      this.$emit("update:selectedIndex", !row.isSelected ? row.index : null);
       this.$emit("update:selectedFilter", !row.isSelected ? item.id : null);
     },
 
