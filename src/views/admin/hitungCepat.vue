@@ -5,7 +5,7 @@
         <Table
           :showBtnTambah="false"
           :headers="headers"
-          :items="itemsKotakSuara"
+          :items="itemsHitungCepat"
           itemKey="id"
           sortBy="id"
           :loading="loading"
@@ -60,16 +60,17 @@ export default {
       loading: true,
       headers: [
         {
-          text: "#",
+          text: "Nomor Urut",
           align: "start",
           sortable: false,
-          value: "index",
+          value: "nomor",
         },
-        { text: "Nama Pemilih", value: "nama" },
-        { text: "Username", value: "username" },
-        { text: "Waktu Memilih", value: "waktu" },
+        { text: "Nama Kandidat", value: "nama" },
+        { text: "Foto Kandidat", value: "foto" },
+        { text: "Keterangan", value: "keterangan" },
+        { text: "Jumlah Suara", value: "jumlah" },
       ],
-      itemsKotakSuara: [],
+      itemsHitungCepat: [],
       selectedDaftarVote: null,
       selectedDaftarVoteIndex: null,
     };
@@ -83,7 +84,7 @@ export default {
   watch: {
     selectedDaftarVote(val) {
       if (!val) {
-        this.itemsKotakSuara = [];
+        this.itemsHitungCepat = [];
         return;
       }
 
@@ -107,10 +108,10 @@ export default {
       const res = await this.getDataList({
         id: this.selectedDaftarVote,
         index: this.selectedDaftarVoteIndex,
-        jenis: "kotaksuara",
+        jenis: "hitungcepat",
       });
 
-      this.itemsKotakSuara = res.data;
+      this.itemsHitungCepat = res.data;
 
       this.loading = false;
     },

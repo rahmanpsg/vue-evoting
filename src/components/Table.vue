@@ -103,6 +103,10 @@
         {{ formatTanggal(item) }}
       </template>
 
+      <template v-slot:[`item.waktu`]="{ item }">
+        {{ formatWaktu(item.waktu) }}
+      </template>
+
       <template v-slot:[`item.foto`]="{ item }">
         <v-avatar size="150px" class="my-2">
           <img alt="Avatar" :src="fotoUrl(item.id, item)" />
@@ -113,6 +117,10 @@
         <v-avatar class="my-2">
           <img alt="Avatar" :src="fotoUrl(item.id, item)" />
         </v-avatar>
+      </template>
+
+      <template v-slot:[`item.jumlah`]="{ item }">
+        <p class="font-weight-bold">{{ item.jumlah }} Suara</p>
       </template>
 
       <template v-slot:[`item.status`]="{ item }">
@@ -280,6 +288,10 @@ export default {
       }
 
       return `${tgl_mulai} - ${tgl_selesai}`;
+    },
+    formatWaktu(waktu) {
+      moment.locale("id");
+      return moment(waktu).format("llll");
     },
     formatTotalKandidat(kandidat) {
       let res;

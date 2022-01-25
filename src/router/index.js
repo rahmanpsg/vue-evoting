@@ -59,6 +59,10 @@ const routes = [
         component: () => import("../views/admin/kotakSuara.vue"),
       },
       {
+        path: "hitungcepat/",
+        component: () => import("../views/admin/hitungCepat.vue"),
+      },
+      {
         path: "laporan/",
         component: () => import("../views/admin/laporan.vue"),
       },

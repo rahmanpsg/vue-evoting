@@ -14,6 +14,9 @@ export default {
     setListData(state, { index, jenis, items }) {
       if (jenis == "kandidat") state.items[index].list_kandidat = items;
       if (jenis == "pemilih") state.items[index].list_pemilih = items;
+      // if (jenis == 'kotaksuara'){
+      //   const i = state.items[index].list_pemilih.findIndex(v=> v.id == items.)
+      // }
     },
   },
   actions: {
@@ -75,6 +78,19 @@ export default {
         );
         if (res.status == 202) {
           commit("setListData", { index, jenis, items: items });
+        }
+
+        return res;
+      } catch (error) {
+        return error.response;
+      }
+    },
+    async getDataList({ state, commit }, { id, index, jenis }) {
+      try {
+        const res = await axios.get(`${state.path}/${jenis}/${id}`);
+
+        if (res.status == 200) {
+          commit("setListData", { index, jenis, items: res.data });
         }
 
         return res;
