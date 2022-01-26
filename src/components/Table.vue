@@ -108,13 +108,13 @@
       </template>
 
       <template v-slot:[`item.foto`]="{ item }">
-        <v-avatar size="150px" class="my-2">
+        <v-avatar size="150" color="grey" class="my-2">
           <img alt="Avatar" :src="fotoUrl(item.id, item)" />
         </v-avatar>
       </template>
 
       <template v-slot:[`item.fotoKandidat`]="{ item }">
-        <v-avatar class="my-2">
+        <v-avatar class="my-2" color="grey">
           <img alt="Avatar" :src="fotoUrl(item.id, item)" />
         </v-avatar>
       </template>

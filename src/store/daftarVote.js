@@ -98,5 +98,14 @@ export default {
         return error.response;
       }
     },
+    async getDataPerolehanSuara({ state }, { id }) {
+      try {
+        const res = await axios.get(`${state.path}/perolehansuara/${id}`);
+
+        return res;
+      } catch (error) {
+        return error.response;
+      }
+    },
   },
 };
