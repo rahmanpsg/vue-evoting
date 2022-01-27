@@ -32,6 +32,13 @@ const routes = [
     component: () => import("../views/Login.vue"),
   },
   {
+    path: "/logout",
+    beforeEnter: (to, from, next) => {
+      store.dispatch("authModule/logout");
+      next("/");
+    },
+  },
+  {
     path: "/admin",
     component: () => import("../views/admin/index.vue"),
     beforeEnter: isLogin,
@@ -69,6 +76,62 @@ const routes = [
       {
         path: "user/",
         component: () => import("../views/admin/user.vue"),
+      },
+    ],
+  },
+  {
+    path: "/petugas",
+    component: () => import("../views/petugas/index.vue"),
+    beforeEnter: isLogin,
+    children: [
+      {
+        path: "",
+        name: "petugas",
+        component: () => import("../views/admin/dashboard.vue"),
+      },
+      {
+        path: "kandidat/",
+        component: () => import("../views/admin/kandidat.vue"),
+      },
+
+      {
+        path: "pemilih/",
+        component: () => import("../views/admin/pemilih.vue"),
+      },
+      {
+        path: "daftarvote/",
+        component: () => import("../views/admin/daftarVote.vue"),
+      },
+      {
+        path: "kotaksuara/",
+        component: () => import("../views/admin/kotakSuara.vue"),
+      },
+      {
+        path: "hitungcepat/",
+        component: () => import("../views/admin/hitungCepat.vue"),
+      },
+      {
+        path: "laporan/",
+        component: () => import("../views/admin/laporan.vue"),
+      },
+    ],
+  },
+  {
+    path: "/pemilih",
+    component: () => import("../views/pemilih/index.vue"),
+    beforeEnter: isLogin,
+    children: [
+      {
+        path: "",
+        name: "pemilih",
+        meta: { text: "Home" },
+        component: () => import("../views/pemilih/home.vue"),
+      },
+      {
+        path: "vote/",
+        name: "pemilih-vote",
+        meta: { text: "Daftar Vote" },
+        component: () => import("../views/pemilih/vote.vue"),
       },
     ],
   },

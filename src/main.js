@@ -5,6 +5,9 @@ import vueaxios from "./plugins/axios";
 import router from "./router";
 import store from "./store";
 import { Plugins } from "@capacitor/core";
+import vueAwesomeCountdown from "vue-awesome-countdown";
+
+Vue.use(vueAwesomeCountdown, "vac");
 
 const { SplashScreen } = Plugins;
 

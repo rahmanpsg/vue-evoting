@@ -4,6 +4,7 @@ export default {
   namespaced: true,
   state: () => ({
     login: false,
+    id: null,
     username: null,
     nama: null,
     role: null,
@@ -12,6 +13,8 @@ export default {
   mutations: {
     isLogin: (state, login) => {
       state.login = login;
+
+      if (!login) state.token = null;
     },
     setData: (state, { token, user }) => {
       try {
@@ -23,14 +26,9 @@ export default {
           "Authorization"
         ] = `Bearer ${token.access_token}`;
 
-        // if (data.role == "pegawai") {
-        //   state.pegawai = new pegawaiModel(data);
-        // } else if (data.role == "verifikator") {
-        //   state.verifikator = new verifikatorModel({
-        //     ...data,
-        //     pegawai: new pegawaiModel(data),
-        //   });
-        // }
+        if (user.role == "pemilih") {
+          state.id = user.id;
+        }
       } catch (error) {
         console.log(error);
       }
@@ -53,8 +51,10 @@ export default {
     },
     logout({ commit }) {
       commit("isLogin", false);
-      this.$router.push("/");
-      localStorage.clear();
+      commit("userModule/reset", {}, { root: true });
+      commit("kandidatModule/reset", {}, { root: true });
+      commit("pemilihModule/reset", {}, { root: true });
+      commit("daftarVoteModule/reset", {}, { root: true });
     },
   },
 };

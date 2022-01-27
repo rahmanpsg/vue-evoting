@@ -11,12 +11,24 @@ export default {
     setItems(state, items) {
       state.items = items;
     },
+    reset(state) {
+      state.items = [];
+    },
   },
   actions: {
     async getAll({ commit, state }) {
       try {
         const { data } = await axios.get(`${state.path}/`);
         commit("setItems", data);
+      } catch (error) {
+        return error.response;
+      }
+    },
+    async getKandidat({ state }, id) {
+      try {
+        const res = await axios.get(`${state.path}/${id}`);
+
+        return res;
       } catch (error) {
         return error.response;
       }

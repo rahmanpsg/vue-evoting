@@ -11,6 +11,9 @@ export default {
     setItems(state, items) {
       state.items = items;
     },
+    reset(state) {
+      state.items = [];
+    },
   },
   actions: {
     async getAll({ commit, state }) {

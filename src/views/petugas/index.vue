@@ -6,7 +6,7 @@
       <v-toolbar-title>{{ selectedItem }}</v-toolbar-title>
       <v-spacer></v-spacer>
 
-      <v-btn icon to="/logout">
+      <v-btn icon @click="logout">
         <v-icon>mdi-logout</v-icon>
       </v-btn>
     </v-app-bar>
@@ -96,7 +96,7 @@ export default {
       drawer: true,
       // selectedItem: 0,
       items: [
-        { text: "Dashboard", href: "/admin", icon: "mdi-view-dashboard" },
+        { text: "Dashboard", href: "/petugas", icon: "mdi-view-dashboard" },
         {
           text: "Master Data",
           icon: "mdi-gamepad-circle-outline",
@@ -104,17 +104,17 @@ export default {
           children: [
             {
               text: "Data Kandidat",
-              href: "/admin/kandidat",
+              href: "/petugas/kandidat",
               icon: "mdi-account-tie",
             },
             {
               text: "Data Pemilih",
-              href: "/admin/pemilih",
+              href: "/petugas/pemilih",
               icon: "mdi-account-group ",
             },
             {
               text: "Daftar Vote",
-              href: "/admin/daftarvote",
+              href: "/petugas/daftarvote",
               icon: "mdi-vote ",
             },
           ],
@@ -122,25 +122,20 @@ export default {
 
         {
           text: "Kotak Suara",
-          href: "/admin/kotaksuara",
+          href: "/petugas/kotaksuara",
           icon: "mdi-package-variant",
         },
         {
           text: "Hitung Cepat",
-          href: "/admin/hitungcepat",
+          href: "/petugas/hitungcepat",
           icon: "mdi-counter",
         },
         {
           text: "Laporan",
-          href: "/admin/laporan",
+          href: "/petugas/laporan",
           icon: "mdi-chart-box",
         },
         { header: "Setting" },
-        {
-          text: "Users",
-          href: "/admin/user",
-          icon: "mdi-account-cog",
-        },
         {
           text: "Logout",
           href: "/logout",
@@ -175,6 +170,13 @@ export default {
           : this.items[nested[0]].children[nested[1]].text;
 
       return res;
+    },
+  },
+  methods: {
+    logout() {
+      this.$store.commit("authModule/isLogin", false);
+      this.$router.push("/");
+      localStorage.clear();
     },
   },
 };

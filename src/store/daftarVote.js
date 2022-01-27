@@ -5,6 +5,7 @@ export default {
   namespaced: true,
   state: () => ({
     items: [],
+    selectedIndex: null,
     path: "daftarVote",
   }),
   mutations: {
@@ -14,15 +15,28 @@ export default {
     setListData(state, { index, jenis, items }) {
       if (jenis == "kandidat") state.items[index].list_kandidat = items;
       if (jenis == "pemilih") state.items[index].list_pemilih = items;
-      // if (jenis == 'kotaksuara'){
-      //   const i = state.items[index].list_pemilih.findIndex(v=> v.id == items.)
-      // }
+    },
+    setSelectedIndex(state, index) {
+      state.selectedIndex = index;
+    },
+    reset(state) {
+      state.items = [];
     },
   },
   actions: {
     async getAll({ commit, state }) {
       try {
         const { data } = await axios.get(`${state.path}/`);
+        commit("setItems", data);
+      } catch (error) {
+        return error.response;
+      }
+    },
+    async getByPemilih({ commit, state, rootState }) {
+      try {
+        const { data } = await axios.get(
+          `${state.path}/pemilih/${rootState.authModule.id}`
+        );
         commit("setItems", data);
       } catch (error) {
         return error.response;
@@ -98,9 +112,20 @@ export default {
         return error.response;
       }
     },
-    async getDataPerolehanSuara({ state }, { id }) {
+    async getDataPerolehanSuara(_, { id }) {
       try {
-        const res = await axios.get(`${state.path}/perolehansuara/${id}`);
+        const res = await axios.get(`total/perolehansuara/${id}`);
+
+        return res;
+      } catch (error) {
+        return error.response;
+      }
+    },
+    async simpanVote(_, { idDaftarVote, idPemilih, voteNomor }) {
+      try {
+        const res = await axios.post(
+          `vote/${idDaftarVote}/${idPemilih}?vote_nomor=${voteNomor}`
+        );
 
         return res;
       } catch (error) {
