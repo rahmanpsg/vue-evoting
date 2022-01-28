@@ -40,6 +40,19 @@
                     aspect-ratio="1"
                     class="grey lighten-2"
                   >
+                    <v-btn
+                      absolute
+                      class="mt-10"
+                      color="grey darken-2"
+                      large
+                      fab
+                      left
+                      top
+                    >
+                      <div class="text-h4 font-weight-bold white--text">
+                        {{ kandidat.nomor }}
+                      </div>
+                    </v-btn>
                     <template v-slot:placeholder>
                       <v-row
                         class="fill-height ma-0"
@@ -54,29 +67,48 @@
                     </template>
                   </v-img>
                   <v-card-text class="pt-6" style="position: relative">
-                    <v-btn
-                      absolute
-                      color="primary"
-                      class="white--text"
-                      fab
-                      large
-                      right
-                      top
-                      @click="
-                        SelectedkandidatIndex = i;
-                        dialog = true;
-                      "
-                    >
-                      <v-icon>mdi-vote</v-icon>
-                    </v-btn>
+                    <v-scroll-x-reverse-transition>
+                      <v-btn
+                        v-if="belumMemilih"
+                        absolute
+                        color="primary"
+                        class="white--text"
+                        fab
+                        large
+                        right
+                        top
+                        @click="
+                          SelectedkandidatIndex = i;
+                          dialog = true;
+                        "
+                      >
+                        <v-icon>mdi-vote</v-icon>
+                      </v-btn>
+                    </v-scroll-x-reverse-transition>
+                    <v-scroll-x-reverse-transition>
+                      <v-btn
+                        v-if="
+                          telahMemilih &&
+                          kandidat.nomor == daftarVote.vote_nomor
+                        "
+                        absolute
+                        color="primary"
+                        class="white--text"
+                        small
+                        right
+                        top
+                      >
+                        <v-icon left>mdi-check-decagram</v-icon> Dipilih
+                      </v-btn>
+                    </v-scroll-x-reverse-transition>
+
                     <template v-if="!loading">
-                      <div class="font-weight-light grey--text text-h6 mb-2">
-                        Nomor Urut {{ kandidat.nomor }}
-                      </div>
-                      <h3 class="text-h4 font-weight-light primary--text mb-2">
+                      <h3
+                        class="overline text-h6 font-weight-bold primary--text mb-2"
+                      >
                         {{ listDataKandidat[i].nama }}
                       </h3>
-                      <div class="font-weight-light text-h6 mb-2">
+                      <div class="font-weight-light mb-2">
                         {{ listDataKandidat[i].keterangan }}
                       </div>
                     </template>
@@ -132,7 +164,7 @@ export default {
   async created() {
     await this.loadDataKandidat();
 
-    console.log(this.daftarVote);
+    console.log(this.waktuSelesai > new Date());
 
     this.loading = false;
   },
@@ -152,6 +184,16 @@ export default {
         this.daftarVote.list_kandidat[this.SelectedkandidatIndex];
 
       return `Anda yakin untuk memilih nomor urut ${kandidat.nomor}`;
+    },
+    belumMemilih() {
+      return (
+        !this.loading &&
+        !this.daftarVote.telah_memilih &&
+        this.waktuSelesai > new Date()
+      );
+    },
+    telahMemilih() {
+      return !this.loading && this.daftarVote.telah_memilih;
     },
   },
   methods: {
@@ -176,15 +218,21 @@ export default {
     async setVote() {
       this.dialogLoading = true;
 
+      const voteNomor =
+        this.daftarVote.list_kandidat[this.SelectedkandidatIndex].nomor;
+
       const res = await this.$store.dispatch("daftarVoteModule/simpanVote", {
         idDaftarVote: this.daftarVote.id,
         idPemilih: this.$store.state.authModule.id,
-        voteNomor:
-          this.daftarVote.list_kandidat[this.SelectedkandidatIndex].nomor,
+        voteNomor,
       });
 
       if (res.status == 201) {
         this.response.text = res.data.message;
+        this.$store.commit("daftarVoteModule/setVoting", {
+          index: this.selectedIndex,
+          voteNomor,
+        });
       } else {
         this.response.text = res.data.detail;
       }

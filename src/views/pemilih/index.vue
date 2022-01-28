@@ -62,7 +62,8 @@ export default {
   },
   computed: {
     hasChildren() {
-      return this.$route.fullPath.split("/").length > 2;
+      return this.$route.fullPath.split("/").pop() == "vote";
+      // return this.$route.fullPath.split("/").length > 2;
     },
   },
   methods: {},

@@ -133,6 +133,12 @@ const routes = [
         meta: { text: "Daftar Vote" },
         component: () => import("../views/pemilih/vote.vue"),
       },
+      {
+        path: "akun/",
+        name: "akun",
+        meta: { text: "Akun" },
+        component: () => import("../views/pemilih/akun.vue"),
+      },
     ],
   },
 ];

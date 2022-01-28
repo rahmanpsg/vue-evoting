@@ -5,8 +5,9 @@ export default {
   state: () => ({
     login: false,
     id: null,
-    username: null,
     nama: null,
+    username: null,
+    password: null,
     role: null,
     token: null,
   }),
@@ -18,20 +19,27 @@ export default {
     },
     setData: (state, { token, user }) => {
       try {
+        state.id = user.id;
         state.username = user.username;
+        state.password = user.password;
         state.nama = user.nama;
         state.role = user.role;
         state.token = token.access_token;
+
         axios.defaults.headers[
           "Authorization"
         ] = `Bearer ${token.access_token}`;
-
-        if (user.role == "pemilih") {
-          state.id = user.id;
-        }
       } catch (error) {
         console.log(error);
       }
+    },
+    reset(state) {
+      state.id = null;
+      state.username = null;
+      state.password = null;
+      state.nama = null;
+      state.role = null;
+      state.token = null;
     },
   },
   actions: {
@@ -51,6 +59,7 @@ export default {
     },
     logout({ commit }) {
       commit("isLogin", false);
+      commit("reset");
       commit("userModule/reset", {}, { root: true });
       commit("kandidatModule/reset", {}, { root: true });
       commit("pemilihModule/reset", {}, { root: true });

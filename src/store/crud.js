@@ -50,7 +50,6 @@ export default {
       try {
         state.editedIndex = state.items.indexOf(item);
         state.editedItem = new state.model(item);
-        console.log(state.editedItem);
 
         if (state.form) state.form.validate();
 

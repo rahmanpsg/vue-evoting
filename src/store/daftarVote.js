@@ -19,6 +19,10 @@ export default {
     setSelectedIndex(state, index) {
       state.selectedIndex = index;
     },
+    setVoting(state, { index, voteNomor }) {
+      state.items[index].telah_memilih = true;
+      state.items[index].vote_nomor = voteNomor;
+    },
     reset(state) {
       state.items = [];
     },
