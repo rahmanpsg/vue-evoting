@@ -5,7 +5,7 @@
         <Table
           @tambah="tambah"
           @edit="edit"
-          @hapus="showDialogHapus"
+          @hapus="showDialogAksi"
           :headers="headers"
           :items="items"
           itemKey="id"
@@ -281,11 +281,11 @@
         </Table>
       </v-col>
     </v-row>
-    <DialogHapus
+    <DialogAksi
       :dialog="dialogDelete"
       :dialogLoading="dialogLoading"
       title="Anda yakin untuk menghapus data ini?"
-      @hapus="hapus"
+      @submit="hapus"
       @closeDialog="closeDialog"
     />
 
@@ -308,7 +308,7 @@
 import Table from "@/components/Table.vue";
 import DialogForm from "@/components/DialogForm.vue";
 import DialogCustom from "@/components/DialogCustom.vue";
-import DialogHapus from "@/components/DialogHapus.vue";
+import DialogAksi from "@/components/DialogAksi.vue";
 import { mapState, mapActions } from "vuex";
 
 import DaftarVoteModel from "@/models/daftarVote";
@@ -318,7 +318,7 @@ export default {
     Table,
     DialogForm,
     DialogCustom,
-    DialogHapus,
+    DialogAksi,
   },
   data() {
     return {
@@ -397,7 +397,7 @@ export default {
   computed: {
     ...mapState("daftarVoteModule", ["items"]),
     ...mapState("kandidatModule", { itemsKandidat: "items" }),
-    ...mapState("pemilihModule", { itemsPemilih: "items" }),
+    // ...mapState("pemilihModule", { itemsPemilih: "items" }),
     ...mapState("crudModule", [
       "valid",
       "dialog",
@@ -411,6 +411,9 @@ export default {
       return this.editedIndex === -1
         ? "Tambah Data Daftar Vote"
         : "Edit Data Daftar Vote";
+    },
+    itemsPemilih() {
+      return this.$store.getters["pemilihModule/pemilihVerif"];
     },
   },
   watch: {
@@ -465,7 +468,7 @@ export default {
       "edit",
       "hapus",
       "simpan",
-      "showDialogHapus",
+      "showDialogAksi",
       "closeDialog",
     ]),
     tutupModalKandidat() {

@@ -5,7 +5,7 @@
         <Table
           @tambah="tambah"
           @edit="edit"
-          @hapus="showDialogHapus"
+          @hapus="showDialogAksi"
           :headers="headers"
           :items="items"
           itemKey="id"
@@ -67,18 +67,18 @@
                 <!-- </v-form> -->
               </template>
             </DialogForm>
-
-            <DialogHapus
-              :dialog="dialogDelete"
-              :dialogLoading="dialogLoading"
-              title="Anda yakin untuk menghapus data ini?"
-              @hapus="hapus"
-              @closeDialog="closeDialog"
-            />
           </template>
         </Table>
       </v-col>
     </v-row>
+    <DialogAksi
+      :dialog="dialogDelete"
+      :dialogLoading="dialogLoading"
+      title="Anda yakin untuk menghapus data ini?"
+      @submit="hapus"
+      @closeDialog="closeDialog"
+    />
+
     <v-snackbar
       :timeout="2000"
       v-model="response.show"
@@ -97,7 +97,7 @@
 <script>
 import Table from "@/components/Table.vue";
 import DialogForm from "@/components/DialogForm.vue";
-import DialogHapus from "@/components/DialogHapus.vue";
+import DialogAksi from "@/components/DialogAksi.vue";
 import { mapState, mapActions } from "vuex";
 
 import UserModel from "@/models/user";
@@ -106,7 +106,7 @@ export default {
   components: {
     Table,
     DialogForm,
-    DialogHapus,
+    DialogAksi,
   },
   data() {
     return {
@@ -162,7 +162,7 @@ export default {
       "edit",
       "hapus",
       "simpan",
-      "showDialogHapus",
+      "showDialogAksi",
       "closeDialog",
     ]),
   },

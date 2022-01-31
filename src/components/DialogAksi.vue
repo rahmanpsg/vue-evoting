@@ -22,7 +22,7 @@
         <v-btn
           plain
           color="error"
-          @click="$emit('hapus')"
+          @click="$emit('submit')"
           :disabled="dialogLoading"
         >
           <v-progress-circular

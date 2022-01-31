@@ -75,6 +75,13 @@
               >
             </v-list-item-content>
           </v-list-item>
+          <v-list-item v-if="items.length < 1">
+            <v-list-item-content>
+              <v-list-item-title class="text-center"
+                >Belum ada data {{ jenis }}</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
         </v-list>
         <v-card-actions class="primary justify-end">
           <v-btn

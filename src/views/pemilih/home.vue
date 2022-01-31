@@ -85,6 +85,7 @@
         </v-list>
       </v-card>
     </v-col>
+    <v-snackbar v-model="snackbar" top> Voting belum dimulai </v-snackbar>
   </v-row>
 </template>
 
@@ -98,6 +99,7 @@ export default {
     return {
       loading: false,
       selectedDaftarVote: null,
+      snackbar: false,
     };
   },
   async created() {
@@ -108,7 +110,7 @@ export default {
     this.loading = false;
   },
   computed: {
-    ...mapState("daftarVoteModule", ["items", "selectedIndex"]),
+    ...mapState("daftarVoteModule", ["items"]),
     tanggal() {
       moment.locale("id");
       return moment().format("DD MMMM YYYY");
@@ -140,6 +142,15 @@ export default {
   methods: {
     ...mapActions("daftarVoteModule", ["getByPemilih"]),
     toVotePage() {
+      if (this.selectedDaftarVote == undefined) return;
+
+      const { tanggal_mulai, jam_mulai } = this.items[this.selectedDaftarVote];
+
+      if (moment(`${tanggal_mulai} ${jam_mulai}`).isAfter(moment())) {
+        this.snackbar = true;
+        return;
+      }
+
       this.$store.commit(
         "daftarVoteModule/setSelectedIndex",
         this.selectedDaftarVote

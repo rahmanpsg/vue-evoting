@@ -136,7 +136,7 @@ export default {
       }
     },
 
-    showDialogHapus({ state }, item) {
+    showDialogAksi({ state }, item) {
       state.editedIndex = state.items.indexOf(item);
       state.editedItem = new state.model(item);
 

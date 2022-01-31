@@ -7,7 +7,6 @@ export default {
     id: null,
     nama: null,
     username: null,
-    password: null,
     role: null,
     token: null,
   }),
@@ -21,7 +20,6 @@ export default {
       try {
         state.id = user.id;
         state.username = user.username;
-        state.password = user.password;
         state.nama = user.nama;
         state.role = user.role;
         state.token = token.access_token;
@@ -36,7 +34,6 @@ export default {
     reset(state) {
       state.id = null;
       state.username = null;
-      state.password = null;
       state.nama = null;
       state.role = null;
       state.token = null;

@@ -139,6 +139,12 @@ const routes = [
         meta: { text: "Akun" },
         component: () => import("../views/pemilih/akun.vue"),
       },
+      {
+        path: "facerecognition/",
+        name: "face-recognition",
+        meta: { text: "Daftar Face Recognition" },
+        component: () => import("../views/pemilih/faceRecognition.vue"),
+      },
     ],
   },
 ];

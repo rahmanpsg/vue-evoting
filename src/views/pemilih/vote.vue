@@ -126,12 +126,12 @@
         </v-container>
       </v-item-group>
     </v-col>
-    <DialogHapus
+    <DialogAksi
       :title="dialogTitle"
       :dialog="dialog"
       :dialogLoading="dialogLoading"
       @closeDialog="dialog = false"
-      @hapus="setVote"
+      @submit="setVote"
     />
 
     <v-snackbar v-model="response.show" :multi-line="true" center vertical>
@@ -144,10 +144,10 @@
 import axios from "axios";
 import { mapState } from "vuex";
 
-import DialogHapus from "../../components/DialogHapus.vue";
+import DialogAksi from "../../components/DialogAksi.vue";
 
 export default {
-  components: { DialogHapus },
+  components: { DialogAksi },
   data() {
     return {
       listDataKandidat: [],
@@ -163,8 +163,6 @@ export default {
   },
   async created() {
     await this.loadDataKandidat();
-
-    console.log(this.waktuSelesai > new Date());
 
     this.loading = false;
   },

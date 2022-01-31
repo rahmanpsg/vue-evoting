@@ -126,12 +126,20 @@
       <template v-slot:[`item.status`]="{ item }">
         <v-chip
           class="d-flex justify-center"
-          style="width: 100px"
-          :color="item.status ? `green` : `red`"
+          style="width: 120px"
+          :color="
+            item.status == null ? `warning` : item.status ? `green` : `red`
+          "
           dark
           small
         >
-          {{ item.status ? "Aktif" : "Tidak Aktif" }}
+          {{
+            item.status == null
+              ? "Belum di Verifikasi"
+              : item.status
+              ? "Aktif"
+              : "Tidak Aktif"
+          }}
         </v-chip>
       </template>
 
@@ -209,6 +217,37 @@
             </v-icon>
           </template>
           <span>Hapus Data</span>
+        </v-tooltip>
+      </template>
+
+      <template v-slot:[`item.verif`]="{ item }">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon
+              class="mr-2"
+              v-bind="attrs"
+              v-on="on"
+              color="success"
+              @click.stop="$emit('verif', 'terima', item)"
+            >
+              mdi-checkbox-marked-outline
+            </v-icon>
+          </template>
+          <span>Terima</span>
+        </v-tooltip>
+
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon
+              v-bind="attrs"
+              v-on="on"
+              color="error"
+              @click.stop="$emit('verif', 'tolak', item)"
+            >
+              mdi-close-box-outline
+            </v-icon>
+          </template>
+          <span>Tolak</span>
         </v-tooltip>
       </template>
 

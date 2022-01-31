@@ -5,9 +5,9 @@
         <Table
           @tambah="tambah"
           @edit="edit"
-          @hapus="showDialogHapus"
+          @hapus="showDialogAksi"
           :headers="headers"
-          :items="items"
+          :items="itemsVerif"
           itemKey="id"
           sortBy="id"
           :loading="loading"
@@ -28,6 +28,21 @@
                 <v-row>
                   <v-col cols="12" sm="12" md="12">
                     <v-text-field
+                      v-model="editedItem.nik"
+                      label="NIK"
+                      :rules="[
+                        (v) => !!v || 'NIK tidak boleh kosong',
+                        (v) => (v && v.length == 16) || 'NIK harus 16 angka',
+                      ]"
+                      type="number"
+                      counter
+                      maxlength="16"
+                      required
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" sm="12" md="12">
+                    <v-text-field
                       v-model="editedItem.nama"
                       label="Nama"
                       :rules="[(v) => !!v || 'Nama tidak boleh kosong']"
@@ -41,7 +56,7 @@
                       label="Username"
                       :rules="[(v) => !!v || 'Username tidak boleh kosong']"
                       required
-                      autocomplete="off"
+                      autocomplete="false"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="12" md="12">
@@ -50,28 +65,55 @@
                       label="Password"
                       :rules="[(v) => !!v || 'Password tidak boleh kosong']"
                       required
-                      autocomplete="off"
+                      autocomplete="false"
                       :type="showPassword ? 'text' : 'password'"
                       :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
                       @click:append="() => (showPassword = !showPassword)"
                     ></v-text-field>
                   </v-col>
+                  <v-col cols="12" sm="12" md="12">
+                    <v-textarea
+                      v-model="editedItem.alamat"
+                      label="Alamat"
+                      :rules="[(v) => !!v || 'Alamat tidak boleh kosong']"
+                    ></v-textarea>
+                  </v-col>
                 </v-row>
                 <!-- </v-form> -->
               </template>
             </DialogForm>
-
-            <DialogHapus
-              :dialog="dialogDelete"
-              :dialogLoading="dialogLoading"
-              title="Anda yakin untuk menghapus data ini?"
-              @hapus="hapus"
-              @closeDialog="closeDialog"
-            />
           </template>
         </Table>
       </v-col>
+
+      <v-col cols="12">
+        <Table
+          @verif="verif"
+          :headers="headersVerif"
+          :items="itemsNotVerif"
+          itemKey="id"
+          sortBy="id"
+          :loading="loading"
+          :showBtnTambah="false"
+        >
+        </Table>
+      </v-col>
     </v-row>
+    <DialogAksi
+      :dialog="dialogDelete"
+      :dialogLoading="dialogLoading"
+      title="Anda yakin untuk menghapus data ini?"
+      @submit="hapus"
+      @closeDialog="closeDialog"
+    />
+
+    <DialogAksi
+      :dialog="dialogVerif"
+      :dialogLoading="dialogVerifLoading"
+      :title="dialogVerifTitle"
+      @submit="verifSubmit"
+      @closeDialog="dialogVerif = false"
+    />
     <v-snackbar
       :timeout="2000"
       v-model="response.show"
@@ -90,33 +132,43 @@
 <script>
 import Table from "@/components/Table.vue";
 import DialogForm from "@/components/DialogForm.vue";
-import DialogHapus from "@/components/DialogHapus.vue";
+import DialogAksi from "@/components/DialogAksi.vue";
 import { mapState, mapActions } from "vuex";
 
-import UserModel from "@/models/user";
+import PemilihModel from "@/models/pemilih";
 
 export default {
   components: {
     Table,
     DialogForm,
-    DialogHapus,
+    DialogAksi,
   },
   data() {
+    const headers = [
+      {
+        text: "#",
+        align: "start",
+        sortable: false,
+        value: "index",
+      },
+      { text: "Nama", value: "nama" },
+      { text: "NIK", value: "nik" },
+      { text: "Username", value: "username" },
+      { text: "Alamat", value: "alamat" },
+      { text: "Status", value: "status" },
+    ];
     return {
       loading: true,
-      headers: [
-        {
-          text: "#",
-          align: "start",
-          sortable: false,
-          value: "index",
-        },
-        { text: "Nama", value: "nama" },
-        { text: "Username", value: "username" },
-        { text: "Status", value: "status" },
-        { text: "Aksi", value: "aksi", sortable: false },
+      headers: [...headers, { text: "Aksi", value: "aksi", sortable: false }],
+      headersVerif: [
+        ...headers,
+        { text: "Verifikasi", value: "verif", sortable: false },
       ],
       showPassword: false,
+      dialogVerif: false,
+      dialogVerifLoading: false,
+      dialogVerifTitle: null,
+      verifData: { id: null, status: null },
     };
   },
   async created() {
@@ -125,7 +177,7 @@ export default {
     if (!this.items.length) await this.getAll();
 
     await this.$store.commit("crudModule/initCrud", {
-      model: UserModel,
+      model: PemilihModel,
       items: this.items,
       moduleName: "pemilihModule",
     });
@@ -148,17 +200,49 @@ export default {
         ? "Tambah Data Pemilih"
         : "Edit Data Pemilih";
     },
+    itemsVerif() {
+      return this.items.filter((item) => item.status != null);
+    },
+    itemsNotVerif() {
+      return this.items.filter((item) => {
+        return item.status == null;
+      });
+    },
   },
   methods: {
-    ...mapActions("pemilihModule", ["getAll"]),
+    ...mapActions("pemilihModule", ["getAll", "verifikasi"]),
     ...mapActions("crudModule", [
       "tambah",
       "edit",
       "hapus",
       "simpan",
-      "showDialogHapus",
+      "showDialogAksi",
       "closeDialog",
     ]),
+    verif(aksi, item) {
+      this.dialogVerifTitle = `${item.nama} akan di${aksi}`;
+      this.dialogVerif = true;
+
+      this.verifData = { id: item.id, status: aksi == "terima" };
+    },
+    async verifSubmit() {
+      this.dialogVerifLoading = true;
+
+      const res = await this.verifikasi(this.verifData);
+
+      const response = { show: true, text: null, type: "error" };
+
+      if (res.status == 202) {
+        response.text = res.data.message;
+        response.type = "success";
+      } else {
+        response.text = res.data.detail;
+      }
+
+      this.dialogVerifLoading = false;
+      this.dialogVerif = false;
+      this.$store.commit("crudModule/setResponse", response);
+    },
   },
 };
 </script>
