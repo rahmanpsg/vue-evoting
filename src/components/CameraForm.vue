@@ -59,7 +59,10 @@
 import axios from "axios";
 export default {
   data() {
-    const BASE_URL = axios.defaults.baseURL.replace(/(^\w+:|^)\/\//, "");
+    const BASE_URL = axios.defaults.baseURL
+      .replace("http", "ws")
+      .replace("https", "wss");
+
     return {
       cameraReady: false,
       error: false,
@@ -72,7 +75,7 @@ export default {
       },
       progressDetection: 0,
       currentDetection: null,
-      socket: new WebSocket(`ws:${BASE_URL}faceRecognition`),
+      socket: new WebSocket(`${BASE_URL}faceRecognition`),
       response: null,
     };
   },

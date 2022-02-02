@@ -56,7 +56,9 @@ import axios from "axios";
 export default {
   data() {
     const id = this.$store.state.authModule.id;
-    const BASE_URL = axios.defaults.baseURL.replace(/(^\w+:|^)\/\//, "");
+    const BASE_URL = axios.defaults.baseURL
+      .replace("http", "ws")
+      .replace("https", "wss");
     return {
       cameraReady: false,
       error: false,
@@ -69,7 +71,7 @@ export default {
       },
       progressDetection: 0,
       response: null,
-      socket: new WebSocket(`ws://${BASE_URL}regisFace/${id}`),
+      socket: new WebSocket(`${BASE_URL}regisFace/${id}`),
     };
   },
   async mounted() {
