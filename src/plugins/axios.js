@@ -4,7 +4,7 @@ import VueAxios from "vue-axios";
 import store from "@/store";
 
 axios.defaults.baseURL =
-  process.env.NODE_ENV != "development"
+  process.env.NODE_ENV == "development"
     ? process.env.VUE_APP_BASE_URL
     : process.env.VUE_APP_SERVER_URL;
 
