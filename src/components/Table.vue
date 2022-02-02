@@ -143,6 +143,30 @@
         </v-chip>
       </template>
 
+      <template v-slot:[`item.statusVote`]="{ index }">
+        <v-chip
+          class="d-flex justify-center"
+          style="width: 120px"
+          :color="
+            statusVote[index] == 0
+              ? `warning`
+              : statusVote[index] == 1
+              ? `green`
+              : `primary`
+          "
+          dark
+          small
+        >
+          {{
+            statusVote[index] == 0
+              ? `Belum Aktif`
+              : statusVote[index] == 1
+              ? `Aktif`
+              : `Selesai`
+          }}
+        </v-chip>
+      </template>
+
       <template v-slot:[`item.vote_nomor`]="{ item }">
         <v-chip
           class="d-flex justify-center"
@@ -295,6 +319,24 @@ export default {
   data: () => ({
     search: "",
   }),
+  computed: {
+    statusVote() {
+      return this.items.map((item) => {
+        const waktu_mulai = moment(`${item.tanggal_mulai} ${item.jam_mulai}`);
+        const waktu_selesai = moment(
+          `${item.tanggal_selesai} ${item.jam_selesai}`
+        );
+
+        if (waktu_mulai.isAfter(moment())) {
+          return 0;
+        } else if (moment().isBetween(waktu_mulai, waktu_selesai)) {
+          return 1;
+        } else if (waktu_selesai.isBefore(moment())) {
+          return 2;
+        }
+      });
+    },
+  },
   methods: {
     selectRow(item, row) {
       row.select(!row.isSelected);
@@ -331,26 +373,6 @@ export default {
     formatWaktu(waktu) {
       moment.locale("id");
       return moment(waktu).format("llll");
-    },
-    formatTotalKandidat(kandidat) {
-      let res;
-      switch (kandidat.length) {
-        case 0:
-          res = `<v-chip
-          class="d-flex justify-center"
-          style="width: 100px"
-          color="red"
-          dark
-        >
-          Belum ada kandidat
-        </v-chip>`;
-          break;
-
-        default:
-          break;
-      }
-
-      return res;
     },
   },
 };

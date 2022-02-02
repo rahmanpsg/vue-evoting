@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12">
         <v-img
-          src="../assets/yukvoting.png"
+          src="@/assets/yukvoting.png"
           class="mx-auto"
           width="300px"
         ></v-img>

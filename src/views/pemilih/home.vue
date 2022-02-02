@@ -11,7 +11,7 @@
     <v-col cols="12" class="text-center">
       <v-img
         class="mx-auto"
-        :src="require('@/assets/logo.png')"
+        src="@/assets/yukvoting.png"
         transition="scale-transition"
         width="100"
       ></v-img>
@@ -81,6 +81,14 @@
 
               <v-divider v-if="daftarVote" :key="`div-${i}`" inset></v-divider>
             </template>
+
+            <v-list-item v-if="!items.length">
+              <v-list-item-content>
+                <v-list-item-title class="text-center"
+                  >Anda belum memiliki daftar vote</v-list-item-title
+                >
+              </v-list-item-content></v-list-item
+            >
           </v-list-item-group>
         </v-list>
       </v-card>

@@ -3,8 +3,11 @@ import axios from "axios";
 import VueAxios from "vue-axios";
 import store from "@/store";
 
-if (process.env.NODE_ENV == "development")
-  axios.defaults.baseURL = `http://192.168.43.239:4000/`;
+axios.defaults.baseURL =
+  process.env.NODE_ENV == "development"
+    ? process.env.VUE_APP_BASE_URL
+    : process.env.VUE_APP_SERVER_URL;
+
 axios.defaults.headers[
   "Authorization"
 ] = `Bearer ${store.state.authModule.token}`;

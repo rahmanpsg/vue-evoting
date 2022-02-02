@@ -6,8 +6,12 @@
 
         <v-spacer></v-spacer>
 
-        <v-btn icon @click="submit">
-          <v-icon>{{
+        <v-btn icon @click="submit" :disabled="loading">
+          <v-progress-circular
+            indeterminate
+            v-if="loading"
+          ></v-progress-circular>
+          <v-icon v-else>{{
             edit ? "mdi-content-save-all" : "mdi-account-edit"
           }}</v-icon>
         </v-btn>
@@ -67,14 +71,15 @@
                 :rules="[(v) => !!v || 'Alamat tidak boleh kosong']"
               ></v-textarea>
             </v-col>
+            <v-col cols="12" sm="12" md="12">
+              <v-checkbox
+                :value="editedItem.face_recognition"
+                label="Aktifkan Login Dengan Face Recognition"
+                @click="toFaceRecognition"
+              ></v-checkbox>
+            </v-col>
           </v-row>
         </v-form>
-
-        <v-checkbox
-          v-model="loginFaceRecognition"
-          label="Aktifkan Login Dengan Face Recognition"
-          @click="toFaceRecognition"
-        ></v-checkbox>
       </v-card-text>
       <v-snackbar v-model="snackbar" top>{{ snackbarText }}</v-snackbar>
     </v-card>
@@ -87,10 +92,10 @@ import { mapState, mapActions } from "vuex";
 export default {
   data() {
     return {
+      loading: true,
       edit: false,
       valid: true,
       showPassword: false,
-      loginFaceRecognition: false,
       nik: null,
       password: null,
       alamat: null,
@@ -99,24 +104,13 @@ export default {
     };
   },
   async created() {
-    // await this.$store.dispatch("pemilihModule/getItem", {
-    //   id: this.id,
-    // });
-    if (this.data.nik == null) await this.getItem({ id: this.id });
+    if (this.editedItem.nik == null) await this.getItem({ id: this.id });
+
+    this.loading = false;
   },
   computed: {
     ...mapState("authModule", ["id"]),
-    ...mapState("pemilihModule", ["data"]),
-    editedItem() {
-      return {
-        id: this.id,
-        nik: this.data.nik,
-        nama: this.data.nama,
-        username: this.data.username,
-        password: this.data.password,
-        alamat: this.data.alamat,
-      };
-    },
+    ...mapState("pemilihModule", { editedItem: "data" }),
   },
   methods: {
     ...mapActions("pemilihModule", ["getItem", "editItem"]),
@@ -125,6 +119,8 @@ export default {
         this.edit = true;
         return;
       }
+
+      this.loading = true;
 
       const res = await this.editItem({ index: -1, item: this.editedItem });
 
@@ -136,9 +132,12 @@ export default {
       } else {
         this.snackbarText = res.data.detail;
       }
+
+      this.loading = false;
     },
     toFaceRecognition() {
-      this.$router.push("/pemilih/facerecognition");
+      if (this.editedItem.face_recognition == null)
+        this.$router.push("/pemilih/facerecognition");
     },
   },
 };

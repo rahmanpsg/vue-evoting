@@ -12,9 +12,9 @@
       <v-col cols="12" class="text-center">
         <v-img
           class="mx-auto"
-          :src="require('@/assets/logo.png')"
+          src="@/assets/yukvoting.png"
           transition="scale-transition"
-          width="100"
+          width="150"
         ></v-img>
         <h1 class="primary--text">Selamat Datang Di Aplikasi E-Voting</h1>
         <h3 class="primary--text">
@@ -249,11 +249,18 @@ export default {
   },
   computed: {
     ...mapState("daftarVoteModule", {
-      itemsDaftarVote: "items",
+      itemsDV: "items",
     }),
     tanggal() {
       moment.locale("id");
       return moment().format("DD MMMM YYYY");
+    },
+    itemsDaftarVote() {
+      return this.itemsDV.filter((item) => {
+        const waktu_mulai = moment(`${item.tanggal_mulai} ${item.jam_mulai}`);
+
+        return waktu_mulai.isBefore(moment());
+      });
     },
   },
   methods: {

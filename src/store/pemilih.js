@@ -1,22 +1,20 @@
 // import itemModel from "@/models/item";
 import axios from "axios";
+import PemilihModel from "../models/pemilih";
 
 export default {
   namespaced: true,
   state: () => ({
     items: [],
     path: "pemilih",
-    data: {
-      nik: null,
-      nama: null,
-      username: null,
-      password: null,
-      alamat: null,
-    },
+    data: new PemilihModel({}),
   }),
   getters: {
     pemilihVerif(state) {
       return state.items.filter((item) => item.status);
+    },
+    faceRecognition(state) {
+      return state.data.face_recognition;
     },
   },
   mutations: {
@@ -24,7 +22,7 @@ export default {
       state.items = items;
     },
     setData(state, data) {
-      state.data = data;
+      state.data = new PemilihModel(data);
     },
     reset(state) {
       state.items = [];
@@ -39,20 +37,12 @@ export default {
         return error.response;
       }
     },
-    async getItem({ commit, state, rootState }, { id }) {
+    async getItem({ commit, state }, { id }) {
       try {
         const res = await axios.get(`${state.path}/${id}`);
 
         if (res.status == 200) {
-          const { nik, password, alamat } = res.data;
-
-          commit("setData", {
-            nik,
-            password,
-            alamat,
-            nama: rootState.authModule.nama,
-            username: rootState.authModule.username,
-          });
+          commit("setData", res.data);
         }
       } catch (error) {
         return error.response;

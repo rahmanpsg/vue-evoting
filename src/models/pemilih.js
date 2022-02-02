@@ -1,5 +1,14 @@
 class PemilihModel {
-  constructor({ id, nik, nama, username, password, alamat, status }) {
+  constructor({
+    id,
+    nik,
+    nama,
+    username,
+    password,
+    alamat,
+    status,
+    face_recognition,
+  }) {
     this.id = id;
     this.nik = nik;
     this.nama = nama;
@@ -7,6 +16,7 @@ class PemilihModel {
     this.password = password;
     this.alamat = alamat;
     this.status = status;
+    this.face_recognition = face_recognition;
   }
 }
 

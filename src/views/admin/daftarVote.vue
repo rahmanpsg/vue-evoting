@@ -335,7 +335,7 @@ export default {
         { text: "Nama Vote", value: "nama" },
         { text: "Keterangan", value: "keterangan" },
         { text: "Tanggal", value: "tanggal" },
-        { text: "Status", value: "status" },
+        { text: "Status", value: "statusVote" },
         { text: "Aksi", value: "aksi", sortable: false },
       ],
       headersKandidat: [

@@ -52,8 +52,11 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   data() {
+    const id = this.$store.state.authModule.id;
+    const BASE_URL = axios.defaults.baseURL.replace(/(^\w+:|^)\/\//, "");
     return {
       cameraReady: false,
       error: false,
@@ -64,10 +67,9 @@ export default {
         type: "warning",
         text: "Tidak ada wajah yang terdeteksi",
       },
-      totalDetection: 0,
-      currentDetection: null,
-      //   socket: new WebSocket("ws://192.168.43.239:4000/regisFace/123"),
+      progressDetection: 0,
       response: null,
+      socket: new WebSocket(`ws://${BASE_URL}regisFace/${id}`),
     };
   },
   async mounted() {
@@ -85,16 +87,13 @@ export default {
   beforeDestroy() {
     if (!this.error) this.stop();
     clearInterval(this.detectionInterval);
+    this.socket.close();
   },
   computed: {
-    socket() {
-      const id = this.$store.state.authModule.id;
-      return new WebSocket(`ws://192.168.43.239:4000/regisFace/${id}`);
-    },
     progress() {
       return {
         active: this.alertDetection.type === "info",
-        value: (this.totalDetection / 5) * 100,
+        value: this.progressDetection,
       };
     },
   },
@@ -129,7 +128,6 @@ export default {
 
           console.log("Camera connected");
 
-          // this.socket.on("stream", this.stream);
           this.socket.onmessage = this.stream;
 
           this.stop = () => {
@@ -152,7 +150,6 @@ export default {
     },
     draw(video, context) {
       context.drawImage(video, 0, 0, context.width, context.height);
-      // this.socket.emit("stream", this.canvas.toDataURL("image/jpeg"));
       this.socket.send(this.canvas.toDataURL());
     },
     async stream(message) {
@@ -162,38 +159,32 @@ export default {
       const res = JSON.parse(data);
 
       this.alertDetection.show = true;
-      if (res.detect == null) {
-        this.alertDetection.type = "error";
-        this.alertDetection.text = "Tidak ada wajah yang terdeteksi";
-        this.totalDetection = 0;
-      } else if (res.detect == false) {
-        this.alertDetection.type = "warning";
-        this.alertDetection.text = "Wajah tidak terdaftar";
-        this.totalDetection = 0;
-      } else {
-        // Jika mendeteksi wajah yang sama sebanyak 5x
-        if (this.currentDetection == res.detect) {
-          this.totalDetection++;
-        } else {
-          this.totalDetection = 0;
-        }
+      this.alertDetection.text = res.message;
+      this.alertDetection.type = res.detect == null ? "error" : "warning";
 
-        this.currentDetection = res.detect;
-
+      if (res.detect == true) {
+        this.progressDetection = res.progress;
         this.alertDetection.type = "info";
-        this.alertDetection.text = "Sedang mengenali wajah...";
 
-        if (this.totalDetection < 5) return;
+        if (this.progressDetection < 100) return;
 
         clearInterval(this.detectionInterval);
 
-        this.alertDetection.type = "success";
-        this.alertDetection.text = `Anda berhasil login sebagai ${res.nama}`;
-      }
-      // const bytes = new Uint8Array(image);
-      // const base64 = await base64_arraybuffer(bytes);
+        this.socket.close();
 
-      // self.$refs.imgStream.src = "data:image/png;base64," + atob(base64);
+        this.setFaceRecognition();
+
+        this.alertDetection.type = "success";
+        this.alertDetection.text = "Data wajah berhasil didaftar";
+      }
+    },
+    setFaceRecognition() {
+      const data = this.$store.state.pemilihModule.data;
+
+      this.$store.commit(
+        "pemilihModule/setData",
+        Object.assign(data, { face_recognition: true })
+      );
     },
   },
 };
