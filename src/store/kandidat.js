@@ -60,7 +60,7 @@ export default {
 
         if (res.status == 202) {
           item.file = null;
-          Object.assign(state.items[index], item);
+          Object.assign(state.items[index], res.data.item);
         }
         return res;
       } catch (error) {

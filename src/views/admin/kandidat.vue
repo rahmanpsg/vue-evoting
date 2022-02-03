@@ -42,13 +42,11 @@
                       accept="image/png, image/jpeg, image/bmp"
                       :rules="[
                         (v) =>
-                          editedIndex !== -1 ||
-                          !!v ||
-                          'Foto tidak boleh kosong',
+                          editedIndex != -1 || !!v || 'Foto tidak boleh kosong',
                       ]"
-                      :required="editedIndex !== -1"
+                      :required="editedIndex != -1"
                     ></v-file-input>
-                    <template v-if="editedIndex !== -1">
+                    <template v-if="editedIndex != -1">
                       <div class="ml-6 mt-n4 caption">
                         <v-icon small class="">mdi-information</v-icon>
                         Kosongkan Foto Jika Tidak Ingin Diubah
@@ -133,7 +131,6 @@ export default {
 
     await this.$store.commit("crudModule/initCrud", {
       model: KandidatModel,
-      items: this.items,
       moduleName: "kandidatModule",
     });
 

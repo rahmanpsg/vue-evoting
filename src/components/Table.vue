@@ -109,13 +109,14 @@
 
       <template v-slot:[`item.foto`]="{ item }">
         <v-avatar size="150" color="grey" class="my-2">
-          <img alt="Avatar" :src="fotoUrl(item.id, item)" />
+          <img alt="Avatar" :src="fotoUrl(item)" />
+          <!-- <cld-image :publicId="`kandidat/${item.foto}`" :version="9999" /> -->
         </v-avatar>
       </template>
 
       <template v-slot:[`item.fotoKandidat`]="{ item }">
         <v-avatar class="my-2" color="grey">
-          <img alt="Avatar" :src="fotoUrl(item.id, item)" />
+          <img alt="Avatar" :src="fotoUrl(item)" />
         </v-avatar>
       </template>
 
@@ -283,7 +284,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import moment from "moment";
 
 export default {
@@ -346,8 +346,10 @@ export default {
       this.$emit("update:selectedFilter", !row.isSelected ? item.id : null);
     },
 
-    fotoUrl(id, item) {
-      return `${axios.defaults.baseURL}kandidat/foto/${id}?cache=${item.cache}`;
+    fotoUrl(item) {
+      return `http://res.cloudinary.com/${process.env.VUE_APP_CLOUD_NAME}/image/upload/${item.foto}`;
+      // return `https://res.cloudinary.com/rahmanpsg/image/upload/kandidat/${item.foto}?cache=${item.cache}`;
+      // return `${axios.defaults.baseURL}kandidat/foto/${id}?cache=${item.cache}`;
     },
     formatTanggal(item) {
       moment.locale("id");

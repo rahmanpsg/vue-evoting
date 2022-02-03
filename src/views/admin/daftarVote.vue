@@ -386,7 +386,6 @@ export default {
 
     await this.$store.commit("crudModule/initCrud", {
       model: DaftarVoteModel,
-      items: this.items,
       moduleName: "daftarVoteModule",
     });
 

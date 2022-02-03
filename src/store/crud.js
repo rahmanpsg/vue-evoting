@@ -3,7 +3,6 @@ export default {
   state: () => ({
     form: null,
     model: null,
-    items: null,
     editedIndex: -1,
     editedItem: {},
     dialog: false,
@@ -21,12 +20,11 @@ export default {
     setForm(state, form) {
       state.form = form;
     },
-    initCrud(state, { model, items, moduleName }) {
+    initCrud(state, { model, moduleName }) {
       console.log(`init crud ${moduleName}`);
       state.form = null;
       state.model = model;
       state.editedItem = new model({});
-      state.items = items;
       state.moduleName = moduleName;
     },
     setResponse(state, { show, text, type }) {
@@ -46,9 +44,10 @@ export default {
         console.log(error);
       }
     },
-    async edit({ state }, item) {
+    async edit({ state, rootState }, item) {
       try {
-        state.editedIndex = state.items.indexOf(item);
+        state.editedIndex = rootState[state.moduleName].items.indexOf(item);
+
         state.editedItem = new state.model(item);
 
         if (state.form) state.form.validate();
@@ -136,8 +135,8 @@ export default {
       }
     },
 
-    showDialogAksi({ state }, item) {
-      state.editedIndex = state.items.indexOf(item);
+    showDialogAksi({ state, rootState }, item) {
+      state.editedIndex = rootState[state.moduleName].items.indexOf(item);
       state.editedItem = new state.model(item);
 
       state.dialogDelete = true;

@@ -134,7 +134,6 @@ export default {
 
     await this.$store.commit("crudModule/initCrud", {
       model: UserModel,
-      items: this.items,
       moduleName: "userModule",
     });
 

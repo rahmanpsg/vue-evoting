@@ -7,8 +7,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "capacitor:build": "vue-cli-service capacitor:build",
-    "capacitor:serve": "vue-cli-service capacitor:serve",
-    "build:android": "vue-cli-service capacitor:build && npx cap copy && npx cap sync"
+    "capacitor:serve": "vue-cli-service capacitor:serve"
   },
   "dependencies": {
     "@capacitor/android": "^2.0.0",

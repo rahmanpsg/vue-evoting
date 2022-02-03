@@ -178,7 +178,6 @@ export default {
 
     await this.$store.commit("crudModule/initCrud", {
       model: PemilihModel,
-      items: this.items,
       moduleName: "pemilihModule",
     });
 
