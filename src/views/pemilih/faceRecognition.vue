@@ -172,7 +172,7 @@ export default {
 
         clearInterval(this.detectionInterval);
 
-        this.socket.close();
+        // this.socket.close();
 
         this.setFaceRecognition();
 
@@ -187,6 +187,10 @@ export default {
         "pemilihModule/setData",
         Object.assign(data, { face_recognition: true })
       );
+
+      setTimeout(() => {
+        this.$router.go(-1);
+      }, 2000);
     },
   },
 };

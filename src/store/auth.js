@@ -54,6 +54,16 @@ export default {
         return error.response;
       }
     },
+    async registrasi(_, item) {
+      try {
+        item.status = true;
+        const res = await axios.post(`login/registrasi/`, item);
+
+        return res;
+      } catch (error) {
+        return error.response;
+      }
+    },
     logout({ commit }) {
       commit("isLogin", false);
       commit("reset");

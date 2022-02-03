@@ -18,17 +18,23 @@
           v-bind:key="show"
         >
           <login-form
-            v-if="show"
-            v-on:setLoading="setLoading"
-            v-on:setShow="setShow"
+            v-if="show == 'login'"
+            @setLoading="setLoading"
+            @setShow="setShow"
           >
           </login-form>
 
           <camera-form
-            v-if="!show"
-            v-on:setLoading="setLoading"
-            v-on:setShow="setShow"
+            v-if="show == 'camera'"
+            @setLoading="setLoading"
+            @setShow="setShow"
           />
+
+          <daftar-form
+            v-if="show == 'daftar'"
+            @setLoading="setLoading"
+            @setShow="setShow"
+          ></daftar-form>
         </v-card>
         <h4 class="py-2 white--text text-center">
           &copy; {{ new Date().getFullYear() }} —
@@ -42,14 +48,16 @@
 <script>
 import LoginForm from "../components/LoginForm.vue";
 import CameraForm from "../components/CameraForm.vue";
+import DaftarForm from "../components/DaftarForm.vue";
 
 export default {
   components: {
     LoginForm,
     CameraForm,
+    DaftarForm,
   },
   data: () => ({
-    show: true,
+    show: "login",
     valid: true,
     loading: false,
     username: "",

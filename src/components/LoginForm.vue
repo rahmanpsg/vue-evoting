@@ -34,7 +34,7 @@
           prepend-inner-icon="mdi-key"
         ></v-text-field>
 
-        <a color="secondary" @click="$emit('setShow')"
+        <a color="secondary" @click="$emit('setShow', 'camera')"
           >Login dengan Face Recognition</a
         >
       </v-form>
@@ -44,6 +44,10 @@
         <v-icon left dark>mdi-login-variant</v-icon> Login
       </v-btn>
     </v-card-actions>
+    <v-card-text class="py-2">
+      Belum punya akun?
+      <a color="secondary" @click="$emit('setShow', 'daftar')">Daftar</a>
+    </v-card-text>
   </v-main>
 </template>
 

@@ -190,7 +190,7 @@ export default {
       }
     },
     back() {
-      this.$emit("setShow", true);
+      this.$emit("setShow", "login");
     },
   },
 };
