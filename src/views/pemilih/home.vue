@@ -105,15 +105,20 @@ import { mapState, mapActions } from "vuex";
 export default {
   data() {
     return {
-      loading: false,
+      loading: true,
       selectedDaftarVote: null,
       snackbar: false,
     };
   },
   async created() {
-    this.loading = true;
+    let requestPromise = [];
 
-    if (!this.items.length) await this.getByPemilih();
+    if (!this.itemsKandidat.length)
+      requestPromise.push(this.$store.dispatch("kandidatModule/getAll"));
+
+    if (!this.items.length) requestPromise.push(this.getByPemilih());
+
+    await Promise.all(requestPromise);
 
     this.loading = false;
   },
@@ -149,6 +154,7 @@ export default {
   },
   methods: {
     ...mapActions("daftarVoteModule", ["getByPemilih"]),
+    ...mapState("kandidatModule", { itemsKandidat: "items" }),
     toVotePage() {
       if (this.selectedDaftarVote == undefined) return;
 

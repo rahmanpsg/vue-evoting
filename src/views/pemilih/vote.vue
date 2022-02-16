@@ -36,7 +36,7 @@
               <v-hover v-slot="{ hover }">
                 <v-card :elevation="hover ? 12 : 2">
                   <v-img
-                    :src="getImgKandidat(kandidat.id)"
+                    :src="getImgKandidat[i]"
                     aspect-ratio="1"
                     class="grey lighten-2"
                   >
@@ -141,7 +141,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import { mapState } from "vuex";
 
 import DialogAksi from "../../components/DialogAksi.vue";
@@ -162,12 +161,20 @@ export default {
     };
   },
   async created() {
-    await this.loadDataKandidat();
+    let requestPromise = [];
+
+    if (!this.itemsKandidat.length)
+      requestPromise.push(this.$store.dispatch("kandidatModule/getAll"));
+
+    requestPromise.push(this.loadDataKandidat());
+
+    await Promise.all(requestPromise);
 
     this.loading = false;
   },
   computed: {
     ...mapState("daftarVoteModule", ["items", "selectedIndex"]),
+    ...mapState("kandidatModule", { itemsKandidat: "items" }),
     daftarVote() {
       return this.items[this.selectedIndex];
     },
@@ -193,6 +200,14 @@ export default {
     telahMemilih() {
       return !this.loading && this.daftarVote.telah_memilih;
     },
+    getImgKandidat() {
+      return this.daftarVote.list_kandidat.map((kandidat) => {
+        return (
+          `http://res.cloudinary.com/${process.env.VUE_APP_CLOUD_NAME}/image/upload/` +
+          this.itemsKandidat.find((k) => k.id == kandidat.id).foto
+        );
+      });
+    },
   },
   methods: {
     async loadDataKandidat() {
@@ -207,12 +222,7 @@ export default {
 
       this.listDataKandidat = await Promise.all(kandidat);
     },
-    getImgKandidat(id) {
-      return `${axios.defaults.baseURL}kandidat/foto/${id}`;
-      //   return `${
-      //     axios.defaults.baseURL
-      //   }kandidat/foto/${id}?c=${new Date().getTime()}`;
-    },
+
     async setVote() {
       this.dialogLoading = true;
 

@@ -5,6 +5,7 @@
         <v-btn
           v-if="showBtnTambah"
           color="secondary"
+          :disabled="roleNotAdmin"
           @click.stop="$emit('tambah')"
         >
           <v-icon left> mdi-plus </v-icon>
@@ -34,7 +35,7 @@
               class="mx-2"
               @click.stop="$emit('tambah')"
               small
-              :disabled="!isSelected || loading"
+              :disabled="!isSelected || loading || roleNotAdmin"
             >
               <v-icon> mdi-account-edit </v-icon>
             </v-btn>
@@ -68,7 +69,7 @@
               color="primary"
               @click.stop="$emit('simpan')"
               small
-              :disabled="!isSelected || loading"
+              :disabled="!isSelected || loading || roleNotAdmin"
             >
               <v-icon small> mdi-content-save-all</v-icon>
             </v-btn>
@@ -188,7 +189,7 @@
               v-bind="attrs"
               v-on="on"
               :color="!index ? 'grey' : 'success'"
-              :disabled="!index"
+              :disabled="!index || roleNotAdmin"
               @click="$emit('up', index)"
             >
               mdi-arrow-up-thick
@@ -204,7 +205,7 @@
               v-bind="attrs"
               v-on="on"
               :color="index == items.length - 1 ? 'grey' : 'success'"
-              :disabled="index == items.length - 1"
+              :disabled="index == items.length - 1 || roleNotAdmin"
               @click.stop="$emit('down', index)"
             >
               mdi-arrow-down-thick
@@ -222,6 +223,7 @@
               v-bind="attrs"
               v-on="on"
               color="warning"
+              :disabled="roleNotAdmin"
               @click.stop="$emit('edit', item)"
             >
               mdi-pencil-box-multiple
@@ -236,6 +238,7 @@
               v-bind="attrs"
               v-on="on"
               color="error"
+              :disabled="roleNotAdmin"
               @click.stop="$emit('hapus', item)"
             >
               mdi-close-box-multiple
@@ -253,6 +256,7 @@
               v-bind="attrs"
               v-on="on"
               color="success"
+              :disabled="roleNotAdmin"
               @click.stop="$emit('verif', 'terima', item)"
             >
               mdi-checkbox-marked-outline
@@ -267,6 +271,7 @@
               v-bind="attrs"
               v-on="on"
               color="error"
+              :disabled="roleNotAdmin"
               @click.stop="$emit('verif', 'tolak', item)"
             >
               mdi-close-box-outline
@@ -335,6 +340,9 @@ export default {
           return 2;
         }
       });
+    },
+    roleNotAdmin() {
+      return this.$store.state.authModule.role != "admin";
     },
   },
   methods: {

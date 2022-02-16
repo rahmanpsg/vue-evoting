@@ -1,4 +1,3 @@
-// import itemModel from "@/models/item";
 import axios from "axios";
 import PemilihModel from "../models/pemilih";
 
@@ -26,6 +25,7 @@ export default {
     },
     reset(state) {
       state.items = [];
+      state.data = new PemilihModel({});
     },
   },
   actions: {

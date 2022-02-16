@@ -26,7 +26,7 @@
                 outlined
                 color="primary"
                 :disabled="!cetak"
-                @click="dialog = !dialog"
+                @click="cetakClick"
               >
                 <v-icon left> mdi-printer </v-icon> Cetak
               </v-btn>
@@ -45,6 +45,11 @@
 </template>
 
 <script>
+import axios from "axios";
+import { Capacitor, Plugins } from "@capacitor/core";
+
+const { Browser } = Plugins;
+
 import DialogCetak from "@/components/DialogCetak.vue";
 
 export default {
@@ -68,6 +73,18 @@ export default {
     selectedLaporan(val) {
       if (val == null) return;
       this.cetak = true;
+    },
+  },
+  methods: {
+    async cetakClick() {
+      if (Capacitor.getPlatform() == "android") {
+        const url = `${axios.defaults.baseURL || ""}cetak/${
+          this.selectedLaporan
+        }`;
+        await Browser.open({ url });
+      } else {
+        this.dialog = true;
+      }
     },
   },
 };

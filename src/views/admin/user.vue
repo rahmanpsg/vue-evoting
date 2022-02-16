@@ -121,7 +121,6 @@ export default {
         { text: "Nama", value: "nama" },
         { text: "Username", value: "username" },
         { text: "Role", value: "role" },
-        { text: "Status", value: "status" },
         { text: "Aksi", value: "aksi", sortable: false },
       ],
       showPassword: false,
