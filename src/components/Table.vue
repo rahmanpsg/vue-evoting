@@ -108,6 +108,10 @@
         {{ formatWaktu(item.waktu) }}
       </template>
 
+      <template v-slot:[`item.telpon`]="{ item }">
+        {{ item.telpon ? item.telpon : "-" }}
+      </template>
+
       <template v-slot:[`item.foto`]="{ item }">
         <v-avatar size="150" color="grey" class="my-2">
           <img alt="Avatar" :src="fotoUrl(item)" />

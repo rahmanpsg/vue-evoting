@@ -75,7 +75,7 @@
               <v-checkbox
                 :value="editedItem.face_recognition"
                 label="Aktifkan Login Dengan Face Recognition"
-                @click="toFaceRecognition"
+                @click.prevent="toFaceRecognition"
               ></v-checkbox>
             </v-col>
           </v-row>
@@ -138,6 +138,7 @@ export default {
     toFaceRecognition() {
       if (this.editedItem.face_recognition == null)
         this.$router.push("/pemilih/facerecognition");
+      else this.editedItem.face_recognition = !this.editedItem.face_recognition;
     },
   },
 };

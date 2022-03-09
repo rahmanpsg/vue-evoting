@@ -34,9 +34,9 @@
           prepend-inner-icon="mdi-key"
         ></v-text-field>
 
-        <a color="secondary" @click="$emit('setShow', 'camera')"
+        <!-- <a color="secondary" @click="$emit('setShow', 'camera')"
           >Login dengan Face Recognition</a
-        >
+        > -->
       </v-form>
     </v-card-text>
     <v-card-actions class="justify-center">
@@ -44,10 +44,10 @@
         <v-icon left dark>mdi-login-variant</v-icon> Login
       </v-btn>
     </v-card-actions>
-    <v-card-text class="py-2">
+    <!-- <v-card-text class="py-2">
       Belum punya akun?
       <a color="secondary" @click="$emit('setShow', 'daftar')">Daftar</a>
-    </v-card-text>
+    </v-card-text> -->
   </v-main>
 </template>
 
@@ -91,6 +91,13 @@ export default {
       this.$emit("setLoading", true);
       this.alertRest.text = `Anda berhasil login sebagai ${res.data.user.nama}`;
       this.alertRest.type = "success";
+
+      this.$emit("setLoading", false);
+
+      if (res.data.user.face_recognition == true) {
+        this.$emit("setShow", "camera");
+        return;
+      }
 
       setTimeout(() => {
         this.$store.commit("authModule/isLogin", true);

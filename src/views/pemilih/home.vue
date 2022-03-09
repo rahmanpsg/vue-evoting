@@ -30,9 +30,9 @@
 
           <v-spacer></v-spacer>
 
-          <v-btn icon>
+          <!-- <v-btn icon>
             <v-icon>mdi-magnify</v-icon>
-          </v-btn>
+          </v-btn> -->
 
           <v-btn icon>
             <v-icon>mdi-vote</v-icon>
@@ -66,15 +66,22 @@
                 </v-list-item-content>
 
                 <v-list-item-action>
-                  <v-btn icon>
-                    <v-icon
-                      :color="daftarVote.telah_memilih ? 'primary' : 'orange'"
-                      >{{
-                        daftarVote.telah_memilih
-                          ? "mdi-check-all"
-                          : "mdi-timer-sand-empty"
-                      }}</v-icon
-                    >
+                  <v-btn
+                    :color="daftarVote.telah_memilih ? 'primary' : 'warning'"
+                    class="white--text"
+                    small
+                    right
+                  >
+                    <v-icon>{{
+                      daftarVote.telah_memilih
+                        ? "mdi-check-decagram"
+                        : "mdi-timer-sand-empty"
+                    }}</v-icon>
+                    {{
+                      daftarVote.telah_memilih
+                        ? "Telah melakukan voting"
+                        : "Belum melakukan voting"
+                    }}
                   </v-btn>
                 </v-list-item-action>
               </v-list-item>
@@ -84,7 +91,12 @@
 
             <v-list-item v-if="!items.length">
               <v-list-item-content>
-                <v-list-item-title class="text-center"
+                <v-progress-circular
+                  indeterminate
+                  color="primary"
+                  v-if="loading"
+                ></v-progress-circular>
+                <v-list-item-title v-else class="text-center"
                   >Anda belum memiliki daftar vote</v-list-item-title
                 >
               </v-list-item-content></v-list-item
@@ -157,6 +169,8 @@ export default {
     ...mapState("kandidatModule", { itemsKandidat: "items" }),
     toVotePage() {
       if (this.selectedDaftarVote == undefined) return;
+
+      if (this.items[this.selectedDaftarVote].telah_memilih) return;
 
       const { tanggal_mulai, jam_mulai } = this.items[this.selectedDaftarVote];
 

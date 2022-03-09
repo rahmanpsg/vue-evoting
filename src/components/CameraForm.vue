@@ -47,9 +47,13 @@
       </v-container>
     </v-card-text>
     <v-card-actions class="justify-center">
-      <v-btn color="primary" @click="back" block>
+      <!-- <v-btn color="primary" @click="back" block>
         <v-icon left> mdi-arrow-left </v-icon>
         Login dengan username & password
+      </v-btn> -->
+      <v-btn color="primary" block>
+        <v-icon left>mdi-information</v-icon>
+        Face Recognition dibutuhkan untuk melanjutkan login
       </v-btn>
     </v-card-actions>
   </v-main>
@@ -59,6 +63,7 @@
 import axios from "axios";
 export default {
   data() {
+    const id = this.$store.state.authModule.id;
     const BASE_URL = axios.defaults.baseURL
       .replace("http", "ws")
       .replace("https", "wss");
@@ -75,7 +80,7 @@ export default {
       },
       progressDetection: 0,
       currentDetection: null,
-      socket: new WebSocket(`${BASE_URL}faceRecognition`),
+      socket: new WebSocket(`${BASE_URL}faceRecognition/${id}`),
       response: null,
     };
   },

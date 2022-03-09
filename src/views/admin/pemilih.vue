@@ -78,6 +78,16 @@
                       :rules="[(v) => !!v || 'Alamat tidak boleh kosong']"
                     ></v-textarea>
                   </v-col>
+                  <v-col cols="12" sm="12" md="12">
+                    <v-text-field
+                      type="phone"
+                      v-model="editedItem.telpon"
+                      label="Telpon"
+                      :rules="[(v) => !!v || 'Telpon tidak boleh kosong']"
+                      required
+                      autocomplete="false"
+                    ></v-text-field>
+                  </v-col>
                 </v-row>
                 <!-- </v-form> -->
               </template>
@@ -86,7 +96,7 @@
         </Table>
       </v-col>
 
-      <v-col cols="12">
+      <!-- <v-col cols="12">
         <Table
           @verif="verif"
           :headers="headersVerif"
@@ -97,7 +107,7 @@
           :showBtnTambah="false"
         >
         </Table>
-      </v-col>
+      </v-col> -->
     </v-row>
     <DialogAksi
       :dialog="dialogDelete"
@@ -155,6 +165,7 @@ export default {
       { text: "NIK", value: "nik" },
       { text: "Username", value: "username" },
       { text: "Alamat", value: "alamat" },
+      { text: "Telpon", value: "telpon" },
       { text: "Status", value: "status" },
     ];
     return {
