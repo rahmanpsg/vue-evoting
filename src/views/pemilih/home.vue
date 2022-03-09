@@ -77,11 +77,13 @@
                         ? "mdi-check-decagram"
                         : "mdi-timer-sand-empty"
                     }}</v-icon>
-                    {{
-                      daftarVote.telah_memilih
-                        ? "Telah melakukan voting"
-                        : "Belum melakukan voting"
-                    }}
+                    <div class="d-none d-sm-flex">
+                      {{
+                        daftarVote.telah_memilih
+                          ? "Telah melakukan voting"
+                          : "Belum melakukan voting"
+                      }}
+                    </div>
                   </v-btn>
                 </v-list-item-action>
               </v-list-item>
@@ -105,7 +107,19 @@
         </v-list>
       </v-card>
     </v-col>
-    <v-snackbar v-model="snackbar" top> Voting belum dimulai </v-snackbar>
+    <v-snackbar
+      :timeout="3000"
+      v-model="response.show"
+      absolute
+      centered
+      text
+      outlined
+      :color="response.type"
+    >
+      <v-alert :type="response.type" text shaped prominent>
+        <strong v-text="response.text"></strong>
+      </v-alert>
+    </v-snackbar>
   </v-row>
 </template>
 
@@ -119,7 +133,7 @@ export default {
     return {
       loading: true,
       selectedDaftarVote: null,
-      snackbar: false,
+      response: { show: false, text: null, type: "warning" },
     };
   },
   async created() {
@@ -128,14 +142,20 @@ export default {
     if (!this.itemsKandidat.length)
       requestPromise.push(this.$store.dispatch("kandidatModule/getAll"));
 
-    if (!this.items.length) requestPromise.push(this.getByPemilih());
+    if (!this.items.length) {
+      requestPromise.push(this.getByPemilih());
+      requestPromise.push(this.getItem({ id: this.id }));
+    }
 
     await Promise.all(requestPromise);
 
     this.loading = false;
   },
   computed: {
+    ...mapState("authModule", ["id"]),
     ...mapState("daftarVoteModule", ["items"]),
+    ...mapState("pemilihModule", ["data"]),
+    ...mapState("kandidatModule", { itemsKandidat: "items" }),
     tanggal() {
       moment.locale("id");
       return moment().format("DD MMMM YYYY");
@@ -166,16 +186,25 @@ export default {
   },
   methods: {
     ...mapActions("daftarVoteModule", ["getByPemilih"]),
-    ...mapState("kandidatModule", { itemsKandidat: "items" }),
+    ...mapActions("pemilihModule", ["getItem"]),
+
     toVotePage() {
       if (this.selectedDaftarVote == undefined) return;
+
+      if (this.data.face_recognition == null) {
+        this.response.show = true;
+        this.response.text =
+          "Silahkan tambahkan face recognition di menu akun terlebih dahulu untuk dapat melakukan voting";
+        return;
+      }
 
       if (this.items[this.selectedDaftarVote].telah_memilih) return;
 
       const { tanggal_mulai, jam_mulai } = this.items[this.selectedDaftarVote];
 
       if (moment(`${tanggal_mulai} ${jam_mulai}`).isAfter(moment())) {
-        this.snackbar = true;
+        this.response.show = true;
+        this.response.text = "Voting belum dimulai";
         return;
       }
 
