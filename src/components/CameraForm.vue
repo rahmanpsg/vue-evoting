@@ -51,10 +51,9 @@
         <v-icon left> mdi-arrow-left </v-icon>
         Login dengan username & password
       </v-btn> -->
-      <v-btn color="primary" block>
-        <v-icon left>mdi-information</v-icon>
+      <v-alert type="info">
         Face Recognition dibutuhkan untuk melanjutkan login
-      </v-btn>
+      </v-alert>
     </v-card-actions>
   </v-main>
 </template>
