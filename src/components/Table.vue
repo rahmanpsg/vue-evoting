@@ -129,6 +129,43 @@
         <p class="font-weight-bold">{{ item.jumlah }} Suara</p>
       </template>
 
+      <template v-slot:[`item.face_recognition`]="{ item, index }">
+        <v-btn
+          class="d-flex justify-center"
+          style="width: 160px"
+          :color="
+            item.face_recognition == null
+              ? `warning`
+              : item.face_recognition == true
+              ? `green`
+              : `primary`
+          "
+          dark
+          small
+          @click.stop="
+            item.face_recognition == null
+              ? $emit(
+                  'setFaceRecognition',
+                  item.face_recognition,
+                  item.id,
+                  index
+                )
+              : null
+          "
+        >
+          {{
+            item.face_recognition == null
+              ? `Belum Merekam`
+              : item.face_recognition == true
+              ? `Aktif`
+              : `Tidak Aktif`
+          }}
+          <v-icon v-if="item.face_recognition == null" right small>
+            mdi-face-recognition
+          </v-icon>
+        </v-btn>
+      </template>
+
       <template v-slot:[`item.status`]="{ item }">
         <v-chip
           class="d-flex justify-center"

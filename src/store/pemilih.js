@@ -20,6 +20,9 @@ export default {
     setItems(state, items) {
       state.items = items;
     },
+    setItem(state, index, item) {
+      state.items[index] = item;
+    },
     setData(state, data) {
       state.data = new PemilihModel(data);
     },

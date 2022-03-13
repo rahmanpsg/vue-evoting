@@ -6,6 +6,7 @@
           @tambah="tambah"
           @edit="edit"
           @hapus="showDialogAksi"
+          @setFaceRecognition="setFaceRecognition"
           :headers="headers"
           :items="itemsVerif"
           itemKey="id"
@@ -136,6 +137,30 @@
         <strong v-text="response.text"></strong>
       </v-alert>
     </v-snackbar>
+
+    <v-dialog v-model="dialogFaceRecognition" max-width="700px" persistent>
+      <v-card>
+        <v-card-title>
+          Rekam Data Wajah
+          <v-spacer></v-spacer>
+          <v-icon
+            plain
+            color="secondary"
+            @click="dialogFaceRecognition = false"
+          >
+            mdi-window-close
+          </v-icon>
+        </v-card-title>
+        <v-card-text>
+          <FaceRecognition
+            v-if="dialogFaceRecognition"
+            :id="idPemilihSelected"
+            :index="indexPemilihSelected"
+            @close="dialogFaceRecognition = false"
+          />
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -143,6 +168,7 @@
 import Table from "@/components/Table.vue";
 import DialogForm from "@/components/DialogForm.vue";
 import DialogAksi from "@/components/DialogAksi.vue";
+import FaceRecognition from "@/components/FaceRecognition.vue";
 import { mapState, mapActions } from "vuex";
 
 import PemilihModel from "@/models/pemilih";
@@ -152,6 +178,7 @@ export default {
     Table,
     DialogForm,
     DialogAksi,
+    FaceRecognition,
   },
   data() {
     const headers = [
@@ -166,7 +193,7 @@ export default {
       { text: "Username", value: "username" },
       { text: "Alamat", value: "alamat" },
       { text: "Telpon", value: "telpon" },
-      { text: "Status", value: "status" },
+      { text: "Face Recognition", value: "face_recognition" },
     ];
     return {
       loading: true,
@@ -180,6 +207,9 @@ export default {
       dialogVerifLoading: false,
       dialogVerifTitle: null,
       verifData: { id: null, status: null },
+      dialogFaceRecognition: false,
+      idPemilihSelected: null,
+      indexPemilihSelected: null,
     };
   },
   async created() {
@@ -252,6 +282,15 @@ export default {
       this.dialogVerifLoading = false;
       this.dialogVerif = false;
       this.$store.commit("crudModule/setResponse", response);
+    },
+    setFaceRecognition(status, id, index) {
+      console.log(status, id, index);
+      this.idPemilihSelected = id;
+      this.indexPemilihSelected = index;
+
+      if (status == null) {
+        this.dialogFaceRecognition = true;
+      }
     },
   },
 };
