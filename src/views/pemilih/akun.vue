@@ -71,13 +71,13 @@
                 :rules="[(v) => !!v || 'Alamat tidak boleh kosong']"
               ></v-textarea>
             </v-col>
-            <v-col cols="12" sm="12" md="12">
+            <!-- <v-col cols="12" sm="12" md="12">
               <v-checkbox
                 :value="editedItem.face_recognition"
                 label="Aktifkan Login Dengan Face Recognition"
                 @click.prevent="toFaceRecognition"
               ></v-checkbox>
-            </v-col>
+            </v-col> -->
           </v-row>
         </v-form>
       </v-card-text>
